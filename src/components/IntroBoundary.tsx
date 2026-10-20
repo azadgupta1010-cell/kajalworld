@@ -27,7 +27,7 @@ export class IntroBoundary extends Component<Props, State> {
       return (
         <div
           className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto px-4 py-10"
-          style={{ background: 'radial-gradient(120% 120% at 50% 20%, #8A2846, #4E0F24)' }}
+          style={{ background: 'radial-gradient(120% 120% at 50% 20%, #9D294B, #5E1930)' }}
         >
           <InvitationCard onEnter={this.props.onComplete} reduced />
         </div>

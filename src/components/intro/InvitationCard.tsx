@@ -28,9 +28,23 @@ export function InvitationCard({ onEnter, reduced }: InvitationCardProps) {
       <GoldFrame className="px-7 py-10 sm:px-10 sm:py-12">
         <motion.p
           variants={textRise}
-          className="text-center font-display text-lg font-medium text-rose-deep"
+          className="text-center font-display text-base font-medium leading-relaxed text-rose-deep"
+          lang="hi"
         >
-          {invitation.openingText}
+          {invitation.openingTextHi}
+        </motion.p>
+
+        <motion.p
+          variants={textRise}
+          className="mt-4 text-center font-body text-[0.7rem] uppercase tracking-[0.3em] text-rose-dusty"
+        >
+          With the blessings of our grandparents
+        </motion.p>
+        <motion.p
+          variants={textRise}
+          className="mt-1 text-center font-body text-sm font-medium text-rose-deep"
+        >
+          {invitation.grandparents}
         </motion.p>
 
         <motion.p
@@ -49,9 +63,16 @@ export function InvitationCard({ onEnter, reduced }: InvitationCardProps) {
           className="mt-6 text-center font-display text-5xl font-semibold leading-tight text-rose-deep sm:text-6xl"
         >
           {couple.bride.name}
-          <span className="mx-2 font-script text-3xl text-rose-dusty">&amp;</span>
+          <span className="mx-2 font-script text-3xl text-rose-dusty">weds</span>
           {couple.groom.name}
         </motion.h1>
+
+        <motion.p
+          variants={textRise}
+          className="mt-2 text-center font-body text-xs italic text-rose-deep/70"
+        >
+          (S/o {invitation.groomParents})
+        </motion.p>
 
         <motion.div variants={textRise} className="mt-6 flex justify-center">
           <GoldDivider width={200} />
@@ -72,15 +93,6 @@ export function InvitationCard({ onEnter, reduced }: InvitationCardProps) {
         >
           {invitation.blessing}
         </motion.p>
-
-        {invitation.draft && (
-          <motion.p
-            variants={textRise}
-            className="mt-5 text-center font-body text-[0.7rem] uppercase tracking-[0.18em] text-rose-dusty"
-          >
-            Family details to be confirmed
-          </motion.p>
-        )}
 
         <motion.div variants={textRise} className="mt-9 flex justify-center">
           <button

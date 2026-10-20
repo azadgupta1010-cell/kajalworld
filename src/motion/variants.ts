@@ -3,33 +3,37 @@ import type { Variants } from 'framer-motion'
 /**
  * Reusable motion variants. All animations use transform + opacity only
  * (GPU friendly). No layout-affecting properties, no infinite loops.
+ *
+ * Tuned for a SOFT, fluid feel: gentle easing, generous durations, small
+ * travel distances so nothing feels sharp or abrupt.
  */
 
-export const easeLux = [0.22, 1, 0.36, 1] as const
+// Very soft ease-out curve (slow settle, no snap).
+export const easeLux = [0.16, 1, 0.3, 1] as const
 
 export const sectionFade: Variants = {
-  hidden: { opacity: 0, y: 28, scale: 0.985 },
+  hidden: { opacity: 0, y: 22, scale: 0.99 },
   show: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.8, ease: easeLux },
+    transition: { duration: 1.1, ease: easeLux },
   },
 }
 
 export const staggerContainer: Variants = {
   hidden: {},
   show: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
+    transition: { staggerChildren: 0.16, delayChildren: 0.12 },
   },
 }
 
 export const textRise: Variants = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 16 },
   show: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: easeLux },
+    transition: { duration: 0.95, ease: easeLux },
   },
 }
 
@@ -37,65 +41,31 @@ export const goldGlow: Variants = {
   hidden: { opacity: 0, filter: 'drop-shadow(0 0 0px rgba(231,204,138,0))' },
   show: {
     opacity: 1,
-    filter: 'drop-shadow(0 0 14px rgba(231,204,138,0.55))',
-    transition: { duration: 1.2, ease: easeLux },
+    filter: 'drop-shadow(0 0 16px rgba(231,204,138,0.5))',
+    transition: { duration: 1.6, ease: easeLux },
   },
-}
-
-// --- Envelope opening sequence ---
-
-export const envelopeFloat: Variants = {
-  idle: {
-    y: [0, -6, 0],
-    transition: { duration: 4, ease: 'easeInOut', repeat: Infinity },
-  },
-  still: { y: 0 },
-}
-
-export const flapOpen: Variants = {
-  closed: { rotateX: 0 },
-  open: {
-    rotateX: -175,
-    transition: { duration: 0.8, ease: easeLux },
-  },
-}
-
-export const cardRise: Variants = {
-  inside: { y: 0, opacity: 0, scale: 0.9 },
-  out: {
-    y: '-62%',
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.9, ease: easeLux, delay: 0.35 },
-  },
-}
-
-export const sealPress: Variants = {
-  rest: { scale: 1 },
-  press: { scale: 0.92, transition: { duration: 0.15 } },
-  lift: { scale: 1.08, opacity: 0, transition: { duration: 0.5, ease: easeLux } },
 }
 
 // --- Gallery ---
 
 export const galleryItem: Variants = {
-  hidden: { opacity: 0, y: 24, scale: 0.96 },
+  hidden: { opacity: 0, y: 20, scale: 0.97 },
   show: {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.6, ease: easeLux },
+    transition: { duration: 0.85, ease: easeLux },
   },
 }
 
 export const lightbox: Variants = {
-  hidden: { opacity: 0, scale: 0.9 },
-  show: { opacity: 1, scale: 1, transition: { duration: 0.35, ease: easeLux } },
-  exit: { opacity: 0, scale: 0.92, transition: { duration: 0.25, ease: easeLux } },
+  hidden: { opacity: 0, scale: 0.94 },
+  show: { opacity: 1, scale: 1, transition: { duration: 0.45, ease: easeLux } },
+  exit: { opacity: 0, scale: 0.96, transition: { duration: 0.35, ease: easeLux } },
 }
 
 export const overlayFade: Variants = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { duration: 0.3 } },
-  exit: { opacity: 0, transition: { duration: 0.25 } },
+  show: { opacity: 1, transition: { duration: 0.4 } },
+  exit: { opacity: 0, transition: { duration: 0.3 } },
 }

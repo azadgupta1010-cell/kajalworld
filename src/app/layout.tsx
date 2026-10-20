@@ -26,6 +26,11 @@ export const metadata: Metadata = {
   title: 'Kajal & Daya Sagar — Wedding Invitation',
   description:
     'Together with their families, Kajal Gupta and Daya Sagar invite you to celebrate their wedding on 4 December 2026.',
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
   openGraph: {
     title: 'Kajal & Daya Sagar — Wedding Invitation',
     description: 'Join us in celebrating our wedding on 4 December 2026.',
@@ -33,6 +38,20 @@ export const metadata: Metadata = {
     siteName: 'Kajalworld',
     locale: 'en_IN',
     type: 'website',
+    images: [
+      {
+        url: '/opengraph-image',
+        width: 1200,
+        height: 630,
+        alt: 'Kajal & Daya Sagar — 4 December 2026',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kajal & Daya Sagar — Wedding Invitation',
+    description: 'Join us in celebrating our wedding on 4 December 2026.',
+    images: ['/opengraph-image'],
   },
 }
 
@@ -43,10 +62,14 @@ export const viewport: Viewport = {
   viewportFit: 'cover',
 }
 
+import { Providers } from '@/components/Providers'
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${script.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   )
 }

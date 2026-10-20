@@ -29,9 +29,9 @@ export function WaxSeal({ monogram, size = 92, className }: WaxSealProps) {
     >
       <defs>
         <radialGradient id="ws-wax" cx="0.4" cy="0.35" r="0.75">
-          <stop offset="0" stopColor="#A4325A" />
-          <stop offset="0.6" stopColor="#7A1F3D" />
-          <stop offset="1" stopColor="#56132B" />
+          <stop offset="0" stopColor="#9D294B" />
+          <stop offset="0.6" stopColor="#7A1F3A" />
+          <stop offset="1" stopColor="#5E1930" />
         </radialGradient>
         <linearGradient id="ws-gold" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#F3E2B0" />

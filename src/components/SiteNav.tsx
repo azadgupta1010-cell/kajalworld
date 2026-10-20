@@ -28,7 +28,7 @@ export function SiteNav() {
     href === '/' ? pathname === '/' : pathname.startsWith(href)
 
   return (
-    <header className="sticky top-0 z-40 border-b border-gold/15 bg-night/80 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-gold/30 bg-plum/85">
       <nav className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3" aria-label="Primary">
         <Link
           href="/"

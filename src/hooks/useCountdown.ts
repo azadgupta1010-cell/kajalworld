@@ -34,7 +34,19 @@ export function useCountdown(isoDate: string): Countdown {
   const [state, setState] = useState<Countdown>(() => compute(target))
 
   useEffect(() => {
-    const id = window.setInterval(() => setState(compute(target)), 1000)
+    // If the target is already in the past, there is nothing to tick — avoid
+    // setting up an interval entirely.
+    if (compute(target).isPast) {
+      setState(compute(target))
+      return
+    }
+
+    const id = window.setInterval(() => {
+      const next = compute(target)
+      setState(next)
+      // Stop ticking once we reach/cross the target.
+      if (next.isPast) window.clearInterval(id)
+    }, 1000)
     return () => window.clearInterval(id)
   }, [target])
 

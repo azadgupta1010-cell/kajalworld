@@ -34,11 +34,39 @@ export function GalleryImage({ item, onOpen, reduced }: GalleryImageProps) {
       {!loaded && !broken && <div className="skeleton absolute inset-0" />}
 
       {broken ? (
-        <div className="flex h-full w-full flex-col items-center justify-center text-ivory/50">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
-            <path d="M3 3l18 18M21 15l-5-5L5 21M3 5a2 2 0 012-2h12" strokeLinecap="round" />
+        <div
+          className="flex h-full w-full flex-col items-center justify-center px-4 text-center"
+          style={{
+            background:
+              'radial-gradient(120% 120% at 50% 25%, #9D294B 0%, #5E1930 60%, #21191B 100%)',
+          }}
+          role="img"
+          aria-label={`${item.alt} — photo coming soon`}
+        >
+          {/* small gold floral motif */}
+          <svg
+            width="42"
+            height="42"
+            viewBox="0 0 48 48"
+            fill="none"
+            aria-hidden="true"
+            className="opacity-90"
+          >
+            <g fill="#E3C891">
+              {[0, 72, 144, 216, 288].map((deg) => (
+                <ellipse
+                  key={deg}
+                  cx="24"
+                  cy="13"
+                  rx="4.5"
+                  ry="9"
+                  transform={`rotate(${deg} 24 24)`}
+                />
+              ))}
+            </g>
+            <circle cx="24" cy="24" r="4" fill="#FFF9F2" />
           </svg>
-          <span className="mt-2 font-body text-xs">Unavailable</span>
+          <span className="mt-3 font-script text-lg text-champagne-light">Photo coming soon</span>
         </div>
       ) : (
         <>

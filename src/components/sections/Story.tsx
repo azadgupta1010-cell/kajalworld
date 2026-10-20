@@ -29,34 +29,54 @@ export function Story() {
             <FloralCorner corner="tl" size={80} className="absolute -left-2 -top-2 opacity-70" />
             <FloralCorner corner="br" size={80} className="absolute -bottom-2 -right-2 opacity-70" />
 
-            {story.photo && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={story.photo}
-                alt={`${couple.bride.name} and ${couple.groom.name}`}
-                loading="lazy"
-                className="mx-auto mb-8 max-h-80 w-full rounded-lg object-cover"
-              />
+            {story.draft ? (
+              // Elegant, timeless placeholder — intentional, not a TODO banner.
+              <div className="flex flex-col items-center text-center">
+                <span
+                  className="flex h-20 w-20 items-center justify-center rounded-full border border-gold/40 font-script text-3xl text-gold-light"
+                  aria-hidden="true"
+                >
+                  {couple.monogram}
+                </span>
+
+                <p className="mt-8 max-w-xl text-balance font-display text-2xl italic leading-relaxed text-ivory/90 sm:text-3xl">
+                  &ldquo;Every love story is beautiful, but ours is our favourite.&rdquo;
+                </p>
+
+                <p className="mt-8 font-script text-3xl text-gold-light">
+                  {couple.bride.name} &amp; {couple.groom.name}
+                </p>
+
+                <p className="mt-6 font-body text-[0.7rem] uppercase tracking-[0.2em] text-rose-dusty/80">
+                  Full story coming soon
+                </p>
+              </div>
+            ) : (
+              <>
+                {story.photo && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={story.photo}
+                    alt={`${couple.bride.name} and ${couple.groom.name}`}
+                    loading="lazy"
+                    className="mx-auto mb-8 max-h-80 w-full rounded-lg object-cover"
+                  />
+                )}
+
+                {story.paragraphs.map((p, i) => (
+                  <p
+                    key={i}
+                    className="mb-5 text-center font-body text-base leading-relaxed text-ivory/85 last:mb-0"
+                  >
+                    {p}
+                  </p>
+                ))}
+
+                <p className="mt-8 text-center font-script text-3xl text-gold-light">
+                  {couple.bride.name} &amp; {couple.groom.name}
+                </p>
+              </>
             )}
-
-            {story.draft && (
-              <p className="mb-6 text-center font-body text-[0.7rem] uppercase tracking-[0.18em] text-rose-dusty">
-                Draft — our story is still being written
-              </p>
-            )}
-
-            {story.paragraphs.map((p, i) => (
-              <p
-                key={i}
-                className="mb-5 text-center font-body text-base leading-relaxed text-ivory/85 last:mb-0"
-              >
-                {p}
-              </p>
-            ))}
-
-            <p className="mt-8 text-center font-script text-3xl text-gold-light">
-              {couple.bride.name} &amp; {couple.groom.name}
-            </p>
           </div>
         </Reveal>
       </div>

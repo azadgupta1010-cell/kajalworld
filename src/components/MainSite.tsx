@@ -7,8 +7,7 @@ import { Events } from '@/components/sections/Events'
 import { Story } from '@/components/sections/Story'
 import { Gallery } from '@/components/gallery/Gallery'
 import { Footer } from '@/components/sections/Footer'
-import { MusicToggle } from '@/components/ui/MusicToggle'
-import { placeholderItems } from '@/components/gallery/placeholderItems'
+import { galleryItems } from '@/components/gallery/galleryItems'
 
 interface MainSiteProps {
   onReplayIntro: () => void
@@ -30,7 +29,7 @@ export function MainSite({ onReplayIntro }: MainSiteProps) {
       <Hero />
       <Story />
       <Events limit={5} />
-      <Gallery items={placeholderItems} />
+      <Gallery items={galleryItems} />
 
       <section className="relative px-4 pb-8 pt-4">
         <div className="mx-auto flex max-w-xl flex-wrap justify-center gap-4">
@@ -47,7 +46,6 @@ export function MainSite({ onReplayIntro }: MainSiteProps) {
       </section>
 
       <Footer onReplayIntro={onReplayIntro} />
-      <MusicToggle />
     </motion.main>
   )
 }

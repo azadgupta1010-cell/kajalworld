@@ -5,7 +5,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Envelope } from '@/components/intro/Envelope'
 import { InvitationCard } from '@/components/intro/InvitationCard'
 import { FloralCorner } from '@/components/decor/FloralCorner'
+import { GaneshLogo } from '@/components/decor/GaneshLogo'
 import { useReducedMotionPref } from '@/hooks/useReducedMotion'
+import { useMusic } from '@/components/audio/MusicContext'
 
 interface IntroExperienceProps {
   monogram: string
@@ -21,13 +23,17 @@ type Stage = 'sealed' | 'opening' | 'card'
  */
 export function IntroExperience({ monogram, onComplete }: IntroExperienceProps) {
   const reduced = useReducedMotionPref()
+  const music = useMusic()
   const [stage, setStage] = useState<Stage>('sealed')
 
   const handleOpen = () => {
     if (stage !== 'sealed') return
+    // Start the background music on this user gesture so it feels like the
+    // invitation "opens and plays" (browsers require a gesture for sound).
+    void music?.play()
     setStage('opening')
     // reveal the card after the envelope animation (instant when reduced)
-    window.setTimeout(() => setStage('card'), reduced ? 0 : 1000)
+    window.setTimeout(() => setStage('card'), reduced ? 0 : 1300)
   }
 
   return (
@@ -35,7 +41,7 @@ export function IntroExperience({ monogram, onComplete }: IntroExperienceProps) 
       className="fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden"
       style={{
         background:
-          'radial-gradient(120% 120% at 50% 20%, #8A2846 0%, #6E162F 45%, #4E0F24 100%)',
+          'radial-gradient(120% 120% at 50% 20%, #9D294B 0%, #86203F 45%, #5E1930 100%)',
       }}
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.6 } }}
@@ -72,14 +78,17 @@ export function IntroExperience({ monogram, onComplete }: IntroExperienceProps) 
               className="flex flex-col items-center"
               exit={{ opacity: 0, transition: { duration: reduced ? 0 : 0.4 } }}
             >
-              <motion.p
-                className="mb-10 text-center font-display text-3xl font-medium text-ivory sm:text-4xl"
+              <motion.div
+                className="mb-8 flex flex-col items-center"
                 initial={reduced ? false : { opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
               >
-                A Wedding Invitation
-              </motion.p>
+                <GaneshLogo className="mb-4 w-40 opacity-90 sm:w-52" />
+                <p className="text-center font-display text-3xl font-medium text-ivory sm:text-4xl">
+                  A Wedding Invitation
+                </p>
+              </motion.div>
 
               <Envelope
                 monogram={monogram}

@@ -30,7 +30,7 @@ export function GoldDivider({ className, width = 240 }: GoldDividerProps) {
       {/* central diamond + petals */}
       <g transform="translate(120 12)">
         <path d="M0 -8 L6 0 L0 8 L-6 0 Z" fill="#E7CC8A" />
-        <circle cx="0" cy="0" r="2" fill="#6E162F" />
+        <circle cx="0" cy="0" r="2" fill="#9D294B" />
         <circle cx="-14" cy="0" r="2.2" fill="#C9A24B" />
         <circle cx="14" cy="0" r="2.2" fill="#C9A24B" />
       </g>

@@ -22,23 +22,23 @@ export function Envelope({ monogram, opened, reduced, onOpen }: EnvelopeProps) {
     >
       {/* Envelope back */}
       <div
-        className="absolute inset-0 rounded-md"
+        className="absolute inset-0 rounded-2xl"
         style={{
-          background: 'linear-gradient(145deg,#8A2846,#6E162F)',
-          boxShadow: '0 30px 60px -24px rgba(0,0,0,0.7)',
+          background: 'linear-gradient(145deg,#9D294B,#86203F)',
+          boxShadow: '0 30px 70px -26px rgba(0,0,0,0.65)',
         }}
       />
 
       {/* Card that rises out when opened */}
       <motion.div
-        className="absolute left-1/2 top-1/2 flex items-center justify-center rounded-sm bg-ivory"
+        className="absolute left-1/2 top-1/2 flex items-center justify-center rounded-xl bg-ivory"
         style={{
           width: '86%',
           height: '116%',
           x: '-50%',
           y: '-50%',
           transformOrigin: 'center bottom',
-          boxShadow: '0 20px 40px -18px rgba(0,0,0,0.6)',
+          boxShadow: '0 20px 44px -18px rgba(0,0,0,0.55)',
         }}
         initial={false}
         animate={
@@ -48,22 +48,22 @@ export function Envelope({ monogram, opened, reduced, onOpen }: EnvelopeProps) {
               ? { y: '-108%', opacity: 1, scale: 1 }
               : { y: '-50%', opacity: 0, scale: 0.92 }
         }
-        transition={{ duration: reduced ? 0 : 0.9, ease: [0.22, 1, 0.36, 1], delay: opened && !reduced ? 0.3 : 0 }}
+        transition={{ duration: reduced ? 0 : 1.2, ease: [0.16, 1, 0.3, 1], delay: opened && !reduced ? 0.45 : 0 }}
       >
         <div className="px-6 text-center">
-          <p className="font-script text-2xl text-rose-dusty">You're Invited</p>
+          <p className="font-script text-2xl text-rose-dusty">You&apos;re Invited</p>
           <p className="mt-1 font-display text-lg font-medium gold-foil">{monogram}</p>
         </div>
       </motion.div>
 
       {/* Front pocket (triangle sides) covering the lower card */}
       <div
-        className="absolute inset-0 overflow-hidden rounded-md"
+        className="absolute inset-0 overflow-hidden rounded-2xl"
         style={{ clipPath: 'polygon(0 38%, 50% 100%, 100% 38%, 100% 100%, 0 100%)' }}
       >
         <div
           className="h-full w-full"
-          style={{ background: 'linear-gradient(160deg,#9b3152,#7a1f3d)' }}
+          style={{ background: 'linear-gradient(160deg,#9D294B,#86203F)' }}
         />
       </div>
       {/* subtle gold seam on pocket */}
@@ -86,15 +86,15 @@ export function Envelope({ monogram, opened, reduced, onOpen }: EnvelopeProps) {
         }}
         initial={false}
         animate={{ rotateX: reduced ? (opened ? -175 : 0) : opened ? -175 : 0 }}
-        transition={{ duration: reduced ? 0 : 0.8, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: reduced ? 0 : 1.1, ease: [0.16, 1, 0.3, 1] }}
       >
         <div
           className="h-full w-full"
           style={{
             clipPath: 'polygon(0 0, 100% 0, 50% 100%)',
-            background: 'linear-gradient(180deg,#9b3152,#7a1f3d)',
+            background: 'linear-gradient(180deg,#9D294B,#86203F)',
             backfaceVisibility: 'hidden',
-            boxShadow: '0 4px 18px -6px rgba(0,0,0,0.5)',
+            boxShadow: '0 4px 20px -6px rgba(0,0,0,0.45)',
           }}
         />
       </motion.div>
@@ -115,10 +115,10 @@ export function Envelope({ monogram, opened, reduced, onOpen }: EnvelopeProps) {
         }
         transition={
           opened
-            ? { duration: reduced ? 0 : 0.4 }
+            ? { duration: reduced ? 0 : 0.5 }
             : reduced
               ? { duration: 0 }
-              : { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }
+              : { duration: 3, repeat: Infinity, ease: 'easeInOut' }
         }
         style={{ pointerEvents: opened ? 'none' : 'auto', top: '42%' }}
       >

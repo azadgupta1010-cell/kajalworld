@@ -286,7 +286,7 @@ export const weddingConfig: WeddingConfig = {
       theme: {
         mood: 'A luxurious wedding night under the stars',
         background:
-          'radial-gradient(90% 70% at 50% 25%, #3a1824 0%, #21191B 55%, #140810 100%)',
+          'radial-gradient(90% 70% at 50% 25%, #3a1824 0%, #21191B 55%, #160F12 100%)',
         accent: '#E3C891',
         accentSoft: '#C78D9E',
         motif: '✨',

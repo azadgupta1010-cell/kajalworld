@@ -20,7 +20,7 @@ const navLinks = [
 ]
 
 export function Footer({ onReplayIntro }: FooterProps) {
-  const { couple, hero } = weddingConfig
+  const { couple, hero, contact, credit } = weddingConfig
 
   return (
     <footer className="relative px-4 pb-16 pt-24 text-center">
@@ -60,8 +60,31 @@ export function Footer({ onReplayIntro }: FooterProps) {
           </button>
         )}
 
-        <p className="mt-10 font-body text-xs text-ivory/40">
+        {/* Cordial invitation / contact */}
+        <div className="mt-12">
+          <p className="font-body text-[0.7rem] uppercase tracking-[0.25em] text-rose-dusty">
+            {contact.label}
+          </p>
+          <p className="mt-2 font-display text-lg text-ivory">
+            {weddingConfig.invitation.invitedBy.join(' · ')}
+          </p>
+          <p className="mt-1 font-body text-xs leading-relaxed text-ivory/55">
+            {weddingConfig.invitation.address}
+          </p>
+          <p className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 font-body text-xs text-gold-light/80">
+            {contact.phones.map((p) => (
+              <a key={p} href={`tel:${p}`} className="transition hover:text-gold-light focus-visible:outline">
+                {p}
+              </a>
+            ))}
+          </p>
+        </div>
+
+        <p className="mt-12 font-body text-xs text-ivory/40">
           Made with love. &copy; {new Date().getFullYear()}
+        </p>
+        <p className="mt-1 font-body text-[0.7rem] uppercase tracking-[0.25em] text-gold-light/60">
+          Made by {credit.madeBy}
         </p>
       </Reveal>
     </footer>
