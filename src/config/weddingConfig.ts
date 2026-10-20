@@ -24,6 +24,23 @@ export interface EventTheme {
   motif: string
   /** Whether the scene is daytime (affects light styling). */
   daytime: boolean
+  /** Big brush-style tagline under the title (poster feel). */
+  tagline?: string
+  /** 3–4 short vibe words shown as a stacked list. */
+  vibeWords?: string[]
+  /** A short italic quote for the poster. */
+  quote?: string
+  /** A small footer line of the poster. */
+  footline?: string
+  /** Colour of the big title text. */
+  titleColor?: string
+  /** Decorative ornament palette for this page. */
+  decor?: {
+    ornament: string // hanging ornament / mandala stroke
+    ornamentAccent: string
+    leaf: string // botanical spray leaves
+    flower: string // botanical spray blossoms
+  }
 }
 
 export interface DressCode {
@@ -170,6 +187,12 @@ export const weddingConfig: WeddingConfig = {
         accentSoft: '#E3C891',
         motif: '🪔',
         daytime: true,
+        tagline: 'Where it all begins',
+        vibeWords: ['Blessings', 'Rituals', 'New Beginnings'],
+        quote: 'The first step of a beautiful journey.',
+        footline: 'TRADITION · FAMILY · LOVE',
+        titleColor: '#FFF4D8',
+        decor: { ornament: '#E3C891', ornamentAccent: '#FFF4D8', leaf: '#B98A3E', flower: '#F0C96B' },
       },
     },
     {
@@ -200,6 +223,12 @@ export const weddingConfig: WeddingConfig = {
         accentSoft: '#C5A16A',
         motif: '🎶',
         daytime: false,
+        tagline: 'Let the music play',
+        vibeWords: ['Music', 'Dance', 'Lights', 'Celebration'],
+        quote: 'Tonight we dance like nobody’s watching.',
+        footline: 'RHYTHM · GLAMOUR · JOY',
+        titleColor: '#EAF0FF',
+        decor: { ornament: '#C5A16A', ornamentAccent: '#9FB6FF', leaf: '#6E7FB8', flower: '#C9D4FF' },
       },
     },
     {
@@ -225,11 +254,17 @@ export const weddingConfig: WeddingConfig = {
       theme: {
         mood: 'A warm, festive henna night',
         background:
-          'radial-gradient(120% 120% at 50% 20%, #1E4D3A 0%, #143528 50%, #0A1A14 100%)',
-        accent: '#8FD6A8',
+          'radial-gradient(120% 120% at 50% 20%, #24573F 0%, #163A2A 50%, #0A1A14 100%)',
+        accent: '#CDEBB6',
         accentSoft: '#E3C891',
         motif: '🌿',
         daytime: false,
+        tagline: 'Let mehndi tell our story',
+        vibeWords: ['Traditions', 'Colours', 'Forever Ours'],
+        quote: 'Some get their hands painted. We get our hearts a little brighter.',
+        footline: 'HENNA · MUSIC · MEMORIES',
+        titleColor: '#F3FBEC',
+        decor: { ornament: '#E3C891', ornamentAccent: '#CDEBB6', leaf: '#5E8C63', flower: '#E8A0B4' },
       },
     },
     {
@@ -253,13 +288,19 @@ export const weddingConfig: WeddingConfig = {
         women: 'Shades of pink',
       },
       theme: {
-        mood: 'A sunny, playful morning',
+        mood: 'My glow. My vibes. My forever.',
         background:
-          'radial-gradient(120% 120% at 50% 15%, #FFD873 0%, #F6B24A 45%, #E58A6B 100%)',
-        accent: '#9D294B',
-        accentSoft: '#C78D9E',
+          'radial-gradient(120% 120% at 50% 12%, #FFE07A 0%, #FFC24D 38%, #F5859E 72%, #D94E86 100%)',
+        accent: '#C01E63',
+        accentSoft: '#9D294B',
         motif: '🌼',
         daytime: true,
+        tagline: 'My glow. My vibes. My forever.',
+        vibeWords: ['Smiles', 'Laughter', 'Turmeric & Magic'],
+        quote: 'Let the golden memories begin.',
+        footline: 'GOOD PEOPLE · BRIGHT VIBES · BEAUTIFUL BEGINNINGS',
+        titleColor: '#C01E63',
+        decor: { ornament: '#C01E63', ornamentAccent: '#FFC24D', leaf: '#D94E86', flower: '#FF9EC4' },
       },
     },
     {
@@ -291,6 +332,12 @@ export const weddingConfig: WeddingConfig = {
         accentSoft: '#C78D9E',
         motif: '✨',
         daytime: false,
+        tagline: 'The beginning of forever',
+        vibeWords: ['Vows', 'Blessings', 'Forever'],
+        quote: 'Two souls, one promise, under the winter stars.',
+        footline: 'LOVE · FAMILY · FOREVER',
+        titleColor: '#FFF4D8',
+        decor: { ornament: '#E3C891', ornamentAccent: '#C78D9E', leaf: '#8A6B3E', flower: '#C78D9E' },
       },
     },
   ],

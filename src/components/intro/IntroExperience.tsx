@@ -11,7 +11,10 @@ import { useMusic } from '@/components/audio/MusicContext'
 
 interface IntroExperienceProps {
   monogram: string
-  onComplete: () => void
+  /** Begin the guided event journey. */
+  onBegin: () => void
+  /** Skip straight to the homepage. */
+  onSkip: () => void
 }
 
 type Stage = 'sealed' | 'opening' | 'card'
@@ -21,7 +24,7 @@ type Stage = 'sealed' | 'opening' | 'card'
  * floral vignette. Provides Skip at all times and a static fallback for
  * reduced motion. Calls onComplete when the guest enters the site.
  */
-export function IntroExperience({ monogram, onComplete }: IntroExperienceProps) {
+export function IntroExperience({ monogram, onBegin, onSkip }: IntroExperienceProps) {
   const reduced = useReducedMotionPref()
   const music = useMusic()
   const [stage, setStage] = useState<Stage>('sealed')
@@ -38,7 +41,7 @@ export function IntroExperience({ monogram, onComplete }: IntroExperienceProps) 
 
   return (
     <motion.div
-      className="fixed inset-0 z-[60] flex flex-col items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-[60] flex flex-col items-center overflow-y-auto overflow-x-hidden"
       style={{
         background:
           'radial-gradient(120% 120% at 50% 20%, #9D294B 0%, #86203F 45%, #5E1930 100%)',
@@ -61,16 +64,16 @@ export function IntroExperience({ monogram, onComplete }: IntroExperienceProps) 
         }}
       />
 
-      {/* Skip / Enter controls */}
+      {/* Skip controls */}
       <button
         type="button"
-        onClick={onComplete}
+        onClick={onSkip}
         className="absolute right-4 top-4 z-20 rounded-full border border-gold/50 px-4 py-1.5 font-body text-xs uppercase tracking-[0.2em] text-ivory/80 transition hover:text-ivory"
       >
         Skip
       </button>
 
-      <div className="relative z-10 flex w-full flex-1 flex-col items-center justify-center px-4">
+      <div className="relative z-10 flex min-h-[100svh] w-full flex-col items-center justify-center px-4 py-16">
         <AnimatePresence mode="wait">
           {stage !== 'card' ? (
             <motion.div
@@ -118,7 +121,7 @@ export function IntroExperience({ monogram, onComplete }: IntroExperienceProps) 
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <InvitationCard onEnter={onComplete} reduced={reduced} />
+              <InvitationCard onEnter={onBegin} reduced={reduced} />
             </motion.div>
           )}
         </AnimatePresence>

@@ -1,254 +1,290 @@
 'use client'
 
-import Link from 'next/link'
+import { useCallback, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { GoldDivider } from '@/components/decor/GoldDivider'
-import { FloralCorner } from '@/components/decor/FloralCorner'
+import { HangingOrnament } from '@/components/decor/HangingOrnament'
+import { BotanicalSpray } from '@/components/decor/BotanicalSpray'
+import { MandalaCorner } from '@/components/decor/MandalaCorner'
 import { useReducedMotionPref } from '@/hooks/useReducedMotion'
 import { formatDate } from '@/lib/datetime'
-import type { EventItem } from '@/config/weddingConfig'
+import { weddingConfig, type EventItem } from '@/config/weddingConfig'
 
 interface EventExperienceProps {
   event: EventItem
-  index: number // 1-based position in the journey
+  index: number
   total: number
   prevSlug?: string
   nextSlug?: string
 }
 
-const easeSoft = [0.22, 1, 0.36, 1] as const
+const easeSoft = [0.16, 1, 0.3, 1] as const
 
 /**
- * A single ceremony's dedicated, themed page. Each event gets its own
- * background, accent colour, motif and dress code. Guests move through the
- * journey with Previous / Next controls (Tilak → … → Wedding).
- * Soft, rounded styling throughout; respects reduced motion.
+ * A single ceremony's dedicated, poster-style themed page — layered with
+ * hanging ornaments, botanical sprays and mandala corners (inspired by the
+ * reference invitation posters), modern typography, and the guided journey
+ * navigation. Each event has its own colours and ornament palette.
  */
 export function EventExperience({ event, index, total, prevSlug, nextSlug }: EventExperienceProps) {
   const reduced = useReducedMotionPref()
+  const router = useRouter()
   const t = event.theme
+  const d = t.decor ?? { ornament: '#C5A16A', ornamentAccent: '#E3C891', leaf: '#5E8C63', flower: '#E8A0B4' }
+  const { couple } = weddingConfig
 
-  const fade = reduced
+  const ink = t.daytime ? '#3A2416' : '#FFF9F2'
+  const inkSoft = t.daytime ? 'rgba(58,36,22,0.82)' : 'rgba(255,249,242,0.86)'
+
+  // Destination when moving forward: next event, or the main website at the end.
+  const goNext = useCallback(() => {
+    router.push(nextSlug ? `/events/${nextSlug}` : '/')
+  }, [router, nextSlug])
+  const goPrev = useCallback(() => {
+    if (prevSlug) router.push(`/events/${prevSlug}`)
+  }, [router, prevSlug])
+
+  // Prefetch neighbours for instant transitions.
+  useEffect(() => {
+    if (nextSlug) router.prefetch(`/events/${nextSlug}`)
+    if (prevSlug) router.prefetch(`/events/${prevSlug}`)
+  }, [router, nextSlug, prevSlug])
+
+  // Keyboard: arrows / space advance, left goes back.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault()
+        goNext()
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault()
+        goPrev()
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [goNext, goPrev])
+
+  const container = reduced
     ? { initial: false as const, animate: {} }
     : {
-        initial: { opacity: 0, y: 26 },
-        animate: { opacity: 1, y: 0 },
+        initial: 'hidden' as const,
+        animate: 'show' as const,
+        variants: { hidden: {}, show: { transition: { staggerChildren: 0.09, delayChildren: 0.05 } } },
+      }
+  const rise = reduced
+    ? {}
+    : {
+        variants: {
+          hidden: { opacity: 0, y: 16 },
+          show: { opacity: 1, y: 0, transition: { duration: 0.9, ease: easeSoft } },
+        },
       }
 
   return (
     <main
-      className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 py-20"
+      className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 py-16"
       style={{ background: t.background }}
     >
-      {/* soft ambient light wash */}
+      {/* Full-screen tap navigation: left half = previous, right half = next.
+          Sits beneath the content (z-0) so links/buttons still work. */}
+      <button
+        type="button"
+        onClick={goPrev}
+        aria-label="Previous celebration"
+        disabled={!prevSlug}
+        className="absolute inset-y-0 left-0 z-0 w-1/3 cursor-w-resize focus-visible:outline"
+        tabIndex={-1}
+      />
+      <button
+        type="button"
+        onClick={goNext}
+        aria-label={nextSlug ? 'Next celebration' : 'Enter the website'}
+        className="absolute inset-y-0 right-0 z-0 w-2/3 cursor-e-resize focus-visible:outline"
+        tabIndex={-1}
+      />
+      {/* paper grain / vignette */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background: t.daytime
-            ? 'radial-gradient(60% 50% at 50% 30%, rgba(255,255,255,0.22), transparent 70%)'
-            : 'radial-gradient(60% 50% at 50% 40%, rgba(231,204,138,0.14), transparent 70%)',
+            ? 'radial-gradient(70% 55% at 50% 30%, rgba(255,255,255,0.32), transparent 72%)'
+            : 'radial-gradient(70% 55% at 50% 38%, rgba(231,204,138,0.15), transparent 72%)',
+        }}
+      />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            'radial-gradient(circle at 25% 15%, #000 0.5px, transparent 0.5px), radial-gradient(circle at 75% 60%, #000 0.5px, transparent 0.5px)',
+          backgroundSize: '12px 12px, 16px 16px',
         }}
       />
 
-      {/* floral corners, very soft */}
-      <FloralCorner corner="tl" size={150} className="absolute left-0 top-0 opacity-30" />
-      <FloralCorner corner="br" size={150} className="absolute bottom-0 right-0 opacity-30" />
+      {/* Hanging ornaments from the top */}
+      <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={170} className="pointer-events-none absolute left-[8%] top-0 opacity-90" />
+      <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={210} className="pointer-events-none absolute left-[20%] top-0 hidden opacity-80 sm:block" />
+      <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={190} className="pointer-events-none absolute right-[10%] top-0 opacity-90" />
+      <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={150} className="pointer-events-none absolute right-[22%] top-0 hidden opacity-80 sm:block" />
+
+      {/* Mandala corners bottom */}
+      <MandalaCorner corner="bl" color={d.ornament} size={200} className="pointer-events-none absolute bottom-0 left-0 opacity-30" />
+      <MandalaCorner corner="br" color={d.ornament} size={200} className="pointer-events-none absolute bottom-0 right-0 opacity-30" />
 
       {/* journey progress */}
-      <div className="absolute left-1/2 top-6 z-10 flex -translate-x-1/2 items-center gap-2">
+      <div className="absolute left-1/2 top-5 z-20 flex -translate-x-1/2 items-center gap-2">
         {Array.from({ length: total }).map((_, i) => (
           <span
             key={i}
             className="h-1.5 rounded-full transition-all duration-500"
-            style={{
-              width: i === index - 1 ? 26 : 8,
-              background: i === index - 1 ? t.accent : 'rgba(255,255,255,0.35)',
-            }}
+            style={{ width: i === index - 1 ? 26 : 8, background: i === index - 1 ? d.ornamentAccent : 'rgba(255,255,255,0.4)' }}
             aria-hidden="true"
           />
         ))}
       </div>
 
       <motion.div
-        {...fade}
-        transition={{ duration: 0.9, ease: easeSoft }}
-        className="relative z-10 flex w-full max-w-lg flex-col items-center text-center"
+        {...container}
+        className="pointer-events-none relative z-10 flex w-full max-w-xl flex-col items-center text-center"
       >
-        <p
-          className="font-body text-xs uppercase tracking-[0.35em]"
-          style={{ color: t.accent }}
-        >
-          Celebration {index} of {total}
-        </p>
+        <motion.p {...rise} className="font-body text-[0.7rem] font-medium uppercase tracking-[0.4em]" style={{ color: d.ornamentAccent }}>
+          You&apos;re invited to
+        </motion.p>
 
-        <div className="my-4 text-5xl" aria-hidden="true">
-          {t.motif}
-        </div>
+        {/* Title framed by botanical sprays */}
+        <motion.div {...rise} className="relative mt-2 flex items-center justify-center">
+          <BotanicalSpray leaf={d.leaf} flower={d.flower} size={120} className="absolute -left-4 -top-6 hidden opacity-90 sm:block" />
+          <BotanicalSpray leaf={d.leaf} flower={d.flower} size={120} flip className="absolute -right-4 -top-6 hidden opacity-90 sm:block" />
+          <h1
+            className="font-display text-6xl font-semibold uppercase italic leading-[0.92] tracking-tight sm:text-8xl"
+            style={{ color: t.titleColor ?? ink, textShadow: '0 2px 20px rgba(0,0,0,0.2)' }}
+          >
+            {event.name}
+          </h1>
+        </motion.div>
 
-        <h1
-          className="px-2 font-display text-5xl font-semibold leading-tight sm:text-7xl"
-          style={{ color: t.daytime ? '#2a1a12' : '#FFF9F2' }}
-        >
-          {event.name}
-        </h1>
+        {t.tagline && (
+          <motion.p {...rise} className="mt-3 font-script text-3xl sm:text-4xl" style={{ color: d.ornamentAccent }}>
+            {t.tagline}
+          </motion.p>
+        )}
 
-        <p
-          className="mt-4 font-script text-2xl"
-          style={{ color: t.accent }}
-        >
-          {t.mood}
-        </p>
+        {t.vibeWords && (
+          <motion.div {...rise} className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+            {t.vibeWords.map((w, i) => (
+              <span key={w} className="flex items-center gap-3">
+                <span className="font-script text-xl sm:text-2xl" style={{ color: ink }}>{w}</span>
+                {i < t.vibeWords!.length - 1 && <span style={{ color: d.ornamentAccent }} aria-hidden="true">✦</span>}
+              </span>
+            ))}
+          </motion.div>
+        )}
 
-        <div className="mt-6">
-          <GoldDivider width={200} />
-        </div>
-
-        {/* details card — soft, rounded, frosted */}
-        <div
-          className="mt-8 w-full rounded-3xl border p-7 backdrop-blur-sm"
+        {/* couple name band (brushy pill) */}
+        <motion.div
+          {...rise}
+          className="mt-6 rounded-full px-10 py-2.5"
           style={{
-            borderColor: 'rgba(255,255,255,0.18)',
-            background: t.daytime ? 'rgba(255,255,255,0.18)' : 'rgba(0,0,0,0.22)',
+            background: t.daytime
+              ? 'linear-gradient(90deg, transparent, rgba(192,30,99,0.22), transparent)'
+              : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
           }}
         >
-          <p
-            className="font-display text-xl"
-            style={{ color: t.daytime ? '#2a1a12' : '#FFF9F2' }}
-          >
-            {formatDate(event.dateTime)}
+          <p className="font-script text-4xl sm:text-5xl" style={{ color: t.titleColor ?? ink }}>
+            {couple.bride.name.split(' ')[0]} &amp; {couple.groom.name.split(' ')[0]}
           </p>
-          {event.timeLabel && (
-            <p
-              className="mt-1 font-body text-sm"
-              style={{ color: t.daytime ? '#3a2a1f' : 'rgba(255,249,242,0.8)' }}
-            >
-              {event.timeLabel}
-            </p>
-          )}
+        </motion.div>
 
-          <div
-            className="mx-auto my-5 h-px w-24"
-            style={{ background: 'rgba(255,255,255,0.25)' }}
-          />
+        {/* date + venue */}
+        <motion.div {...rise} className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-body text-sm" style={{ color: inkSoft }}>
+          <span className="flex items-center gap-2">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={d.ornamentAccent} strokeWidth="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            {formatDate(event.dateTime)}{event.timeLabel ? ` · ${event.timeLabel}` : ''}
+          </span>
+          <span className="flex items-center gap-2">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={d.ornamentAccent} strokeWidth="1.6" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            {event.venue}{event.city ? `, ${event.city}` : ''}
+          </span>
+        </motion.div>
 
-          <p
-            className="font-body text-base font-medium"
-            style={{ color: t.daytime ? '#2a1a12' : '#FFF9F2' }}
+        {!event.venueConfirmed && (
+          <motion.span {...rise} className="mt-3 inline-block rounded-full border px-3 py-0.5 font-body text-[0.65rem] uppercase tracking-[0.15em]" style={{ borderColor: d.ornamentAccent, color: inkSoft }}>
+            Venue to be confirmed
+          </motion.span>
+        )}
+
+        {t.quote && (
+          <motion.p {...rise} className="mt-5 max-w-md font-serif text-lg italic leading-relaxed" style={{ color: inkSoft }}>
+            “{t.quote}”
+          </motion.p>
+        )}
+
+        {event.dressCode && (
+          <motion.div
+            {...rise}
+            className="mt-6 w-full max-w-md rounded-3xl border p-5 backdrop-blur-[2px]"
+            style={{
+              borderColor: t.daytime ? 'rgba(157,41,75,0.25)' : 'rgba(255,255,255,0.18)',
+              background: t.daytime ? 'rgba(255,255,255,0.32)' : 'rgba(255,255,255,0.06)',
+            }}
           >
-            {event.venue}
-            {event.city ? `, ${event.city}` : ''}
-          </p>
-          {!event.venueConfirmed && (
-            <span
-              className="mt-2 inline-block rounded-full border px-3 py-0.5 font-body text-[0.65rem] uppercase tracking-[0.15em]"
-              style={{ borderColor: t.accentSoft, color: t.daytime ? '#5a3a2a' : t.accentSoft }}
-            >
-              Venue to be confirmed
-            </span>
-          )}
-
-          {event.invite && (
-            <p
-              className="mt-5 font-body text-sm italic leading-relaxed"
-              style={{ color: t.daytime ? '#3a2a1f' : 'rgba(255,249,242,0.85)' }}
-            >
-              {event.invite}
-            </p>
-          )}
-
-          {/* Dress code */}
-          {event.dressCode && (
-            <div
-              className="mt-6 rounded-2xl p-4"
-              style={{ background: t.daytime ? 'rgba(255,255,255,0.3)' : 'rgba(255,255,255,0.06)' }}
-            >
-              <p
-                className="font-body text-[0.7rem] uppercase tracking-[0.25em]"
-                style={{ color: t.accent }}
-              >
-                Dress Code
-              </p>
-              {event.dressCode.note ? (
-                <p
-                  className="mt-2 font-body text-sm leading-relaxed"
-                  style={{ color: t.daytime ? '#2a1a12' : '#FFF9F2' }}
-                >
-                  {event.dressCode.note}
-                </p>
-              ) : (
-                <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                  <div>
-                    <p className="font-body text-[0.7rem] uppercase tracking-[0.2em]" style={{ color: t.accentSoft }}>
-                      Men
-                    </p>
-                    <p className="font-body text-sm" style={{ color: t.daytime ? '#2a1a12' : '#FFF9F2' }}>
-                      {event.dressCode.men}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="font-body text-[0.7rem] uppercase tracking-[0.2em]" style={{ color: t.accentSoft }}>
-                      Women
-                    </p>
-                    <p className="font-body text-sm" style={{ color: t.daytime ? '#2a1a12' : '#FFF9F2' }}>
-                      {event.dressCode.women}
-                    </p>
-                  </div>
+            <p className="font-body text-[0.7rem] font-semibold uppercase tracking-[0.25em]" style={{ color: d.ornamentAccent }}>Dress Code</p>
+            {event.dressCode.note ? (
+              <p className="mt-2 font-serif text-base leading-relaxed" style={{ color: ink }}>{event.dressCode.note}</p>
+            ) : (
+              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                <div>
+                  <p className="font-body text-[0.7rem] uppercase tracking-[0.2em]" style={{ color: inkSoft }}>Men</p>
+                  <p className="mt-0.5 font-serif text-base" style={{ color: ink }}>{event.dressCode.men}</p>
                 </div>
-              )}
-            </div>
-          )}
+                <div>
+                  <p className="font-body text-[0.7rem] uppercase tracking-[0.2em]" style={{ color: inkSoft }}>Women</p>
+                  <p className="mt-0.5 font-serif text-base" style={{ color: ink }}>{event.dressCode.women}</p>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
 
-          {event.mapUrl && (
-            <a
-              href={event.mapUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center gap-2 rounded-full border px-6 py-2.5 font-body text-xs uppercase tracking-[0.2em] transition hover:opacity-80 focus-visible:outline"
-              style={{ borderColor: t.accent, color: t.daytime ? '#2a1a12' : t.accent }}
-            >
-              Get Directions &rarr;
-            </a>
-          )}
-        </div>
+        {t.footline && (
+          <motion.p {...rise} className="mt-6 font-body text-[0.65rem] font-medium uppercase tracking-[0.3em]" style={{ color: inkSoft }}>
+            {t.footline}
+          </motion.p>
+        )}
 
-        {/* Journey navigation */}
-        <div className="mt-10 flex w-full items-center justify-between gap-3">
-          {prevSlug ? (
-            <Link
-              href={`/events/${prevSlug}`}
-              className="rounded-full border px-5 py-2.5 font-body text-xs uppercase tracking-[0.18em] transition hover:opacity-80 focus-visible:outline"
-              style={{ borderColor: 'rgba(255,255,255,0.3)', color: t.daytime ? '#2a1a12' : '#FFF9F2' }}
-            >
-              &larr; Previous
-            </Link>
-          ) : (
-            <Link
-              href="/events"
-              className="rounded-full border px-5 py-2.5 font-body text-xs uppercase tracking-[0.18em] transition hover:opacity-80 focus-visible:outline"
-              style={{ borderColor: 'rgba(255,255,255,0.3)', color: t.daytime ? '#2a1a12' : '#FFF9F2' }}
-            >
-              All events
-            </Link>
-          )}
+        {event.mapUrl && (
+          <motion.a
+            {...rise}
+            href={event.mapUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pointer-events-auto mt-6 inline-flex items-center gap-2 rounded-full border px-6 py-2.5 font-body text-xs font-medium uppercase tracking-[0.2em] transition hover:opacity-80 focus-visible:outline"
+            style={{ borderColor: d.ornamentAccent, color: ink }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            Get Directions &rarr;
+          </motion.a>
+        )}
 
-          {nextSlug ? (
-            <Link
-              href={`/events/${nextSlug}`}
-              className="rounded-full px-7 py-3 font-body text-xs font-medium uppercase tracking-[0.18em] shadow-gold transition hover:opacity-90 focus-visible:outline"
-              style={{ background: t.accent, color: t.daytime ? '#2a1a12' : '#21191B' }}
-            >
-              Next &rarr;
-            </Link>
-          ) : (
-            <Link
-              href="/rsvp"
-              className="rounded-full px-7 py-3 font-body text-xs font-medium uppercase tracking-[0.18em] shadow-gold transition hover:opacity-90 focus-visible:outline"
-              style={{ background: t.accent, color: t.daytime ? '#2a1a12' : '#21191B' }}
-            >
-              RSVP &rarr;
-            </Link>
-          )}
-        </div>
+        {/* Tap hint — the whole screen advances; left edge goes back */}
+        <motion.div {...rise} className="mt-10 flex flex-col items-center gap-2">
+          <p className="font-body text-[0.7rem] uppercase tracking-[0.3em]" style={{ color: inkSoft }}>
+            {nextSlug ? 'Tap anywhere to continue' : 'Tap anywhere to enter'}
+          </p>
+          <motion.span
+            aria-hidden="true"
+            className="text-2xl"
+            style={{ color: d.ornamentAccent }}
+            animate={reduced ? undefined : { x: [0, 6, 0] }}
+            transition={reduced ? undefined : { duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            →
+          </motion.span>
+          <span className="mt-1 font-body text-[0.65rem] uppercase tracking-[0.2em]" style={{ color: inkSoft }}>
+            {index} / {total}
+            {prevSlug ? '  ·  tap left edge to go back' : ''}
+          </span>
+        </motion.div>
       </motion.div>
     </main>
   )

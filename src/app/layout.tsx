@@ -1,22 +1,34 @@
 import type { Metadata, Viewport } from 'next'
-import { Cormorant_Garamond, Jost, Pinyon_Script } from 'next/font/google'
+import { Fraunces, Outfit, Cormorant_Garamond, Dancing_Script } from 'next/font/google'
 import './globals.css'
 
-const display = Cormorant_Garamond({
+// Modern editorial serif for big display headings (poster titles).
+const display = Fraunces({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '500', '600', '700'],
+  style: ['normal', 'italic'],
   variable: '--font-display',
   display: 'swap',
 })
-const body = Jost({
+// Clean, modern geometric sans for body + UI.
+const body = Outfit({
   subsets: ['latin'],
-  weight: ['300', '400', '500'],
+  weight: ['300', '400', '500', '600'],
   variable: '--font-body',
   display: 'swap',
 })
-const script = Pinyon_Script({
+// Refined serif for secondary headings / invitation body.
+const serif = Cormorant_Garamond({
   subsets: ['latin'],
-  weight: ['400'],
+  weight: ['400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-serif',
+  display: 'swap',
+})
+// Warm, flowing script for names and taglines.
+const script = Dancing_Script({
+  subsets: ['latin'],
+  weight: ['500', '600', '700'],
   variable: '--font-script',
   display: 'swap',
 })
@@ -66,7 +78,10 @@ import { Providers } from '@/components/Providers'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${display.variable} ${body.variable} ${script.variable}`}>
+    <html
+      lang="en"
+      className={`${display.variable} ${body.variable} ${serif.variable} ${script.variable}`}
+    >
       <body>
         <Providers>{children}</Providers>
       </body>

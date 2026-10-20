@@ -35,8 +35,12 @@ const config: Config = {
       },
       fontFamily: {
         display: ['var(--font-display)', 'Georgia', 'serif'],
+        serif: ['var(--font-serif)', 'Georgia', 'serif'],
         body: ['var(--font-body)', 'system-ui', 'sans-serif'],
         script: ['var(--font-script)', 'cursive'],
+      },
+      letterSpacing: {
+        luxe: '0.35em',
       },
       boxShadow: {
         gold: '0 0 24px rgba(197, 161, 106, 0.35)',
