@@ -39,22 +39,35 @@ export function GaneshLogo({ className, tone = 'gold' }: GaneshLogoProps) {
     )
   }
 
-  // Elegant text fallback
+  // Elegant text + glyph fallback (used until the real logo file is added).
+  const c = toneColor[tone]
   return (
     <svg
-      viewBox="0 0 320 70"
+      viewBox="0 0 320 96"
       className={className}
       role="img"
       aria-label="Shri Ganeshai Namah"
     >
+      {/* Om / Ganesh glyph */}
       <text
         x="160"
-        y="40"
+        y="34"
         textAnchor="middle"
         dominantBaseline="middle"
-        fontFamily="'Pinyon Script', 'Cormorant Garamond', Georgia, serif"
-        fontSize="38"
-        fill={toneColor[tone]}
+        fontFamily="'Noto Sans', system-ui, sans-serif"
+        fontSize="34"
+        fill={c}
+      >
+        ॐ
+      </text>
+      <text
+        x="160"
+        y="74"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        fontFamily="var(--font-script), 'Cormorant Garamond', Georgia, serif"
+        fontSize="30"
+        fill={c}
       >
         Shri Ganeshai Namah
       </text>

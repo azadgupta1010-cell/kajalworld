@@ -11,32 +11,31 @@ import { useMusic } from '@/components/audio/MusicContext'
 
 interface IntroExperienceProps {
   monogram: string
-  /** Begin the guided event journey. */
+  /** Begin the guided event journey (also called on tap of the card stage). */
   onBegin: () => void
-  /** Skip straight to the homepage. */
-  onSkip: () => void
 }
 
 type Stage = 'sealed' | 'opening' | 'card'
 
 /**
- * Full opening sequence. Deep rose-pink stage with gold ornaments and a
- * floral vignette. Provides Skip at all times and a static fallback for
- * reduced motion. Calls onComplete when the guest enters the site.
+ * Opening sequence:
+ *  1. A sealed envelope on a deep-rose stage. Tapping it (or the button) opens
+ *     the flap and starts the music (first user gesture → audible playback).
+ *  2. After a short hold the invitation card rises into view with all details.
+ *  3. Tapping anywhere on the card stage begins the guided event journey.
+ * No Skip button — the whole screen is the control. Reduced motion supported.
  */
-export function IntroExperience({ monogram, onBegin, onSkip }: IntroExperienceProps) {
+export function IntroExperience({ monogram, onBegin }: IntroExperienceProps) {
   const reduced = useReducedMotionPref()
   const music = useMusic()
   const [stage, setStage] = useState<Stage>('sealed')
 
   const handleOpen = () => {
     if (stage !== 'sealed') return
-    // Start the background music on this user gesture so it feels like the
-    // invitation "opens and plays" (browsers require a gesture for sound).
     void music?.play()
     setStage('opening')
-    // reveal the card after the envelope animation (instant when reduced)
-    window.setTimeout(() => setStage('card'), reduced ? 0 : 1300)
+    // Envelope flap animation, then a gentle 1–1.5s hold before the card.
+    window.setTimeout(() => setStage('card'), reduced ? 0 : 1500)
   }
 
   return (
@@ -50,10 +49,10 @@ export function IntroExperience({ monogram, onBegin, onSkip }: IntroExperiencePr
       exit={{ opacity: 0, transition: { duration: 0.6 } }}
     >
       {/* Floral vignette corners */}
-      <FloralCorner corner="tl" size={160} className="absolute left-0 top-0 opacity-50" />
-      <FloralCorner corner="tr" size={160} className="absolute right-0 top-0 opacity-50" />
-      <FloralCorner corner="bl" size={160} className="absolute bottom-0 left-0 opacity-40" />
-      <FloralCorner corner="br" size={160} className="absolute bottom-0 right-0 opacity-40" />
+      <FloralCorner corner="tl" size={150} className="pointer-events-none absolute left-0 top-0 opacity-50" />
+      <FloralCorner corner="tr" size={150} className="pointer-events-none absolute right-0 top-0 opacity-50" />
+      <FloralCorner corner="bl" size={150} className="pointer-events-none absolute bottom-0 left-0 opacity-40" />
+      <FloralCorner corner="br" size={150} className="pointer-events-none absolute bottom-0 right-0 opacity-40" />
 
       {/* soft warm light wash */}
       <div
@@ -64,16 +63,7 @@ export function IntroExperience({ monogram, onBegin, onSkip }: IntroExperiencePr
         }}
       />
 
-      {/* Skip controls */}
-      <button
-        type="button"
-        onClick={onSkip}
-        className="absolute right-4 top-4 z-20 rounded-full border border-gold/50 px-4 py-1.5 font-body text-xs uppercase tracking-[0.2em] text-ivory/80 transition hover:text-ivory"
-      >
-        Skip
-      </button>
-
-      <div className="relative z-10 flex min-h-[100svh] w-full flex-col items-center justify-center px-4 py-16">
+      <div className="relative z-10 flex min-h-[100svh] w-full flex-col items-center justify-center px-4 py-10 sm:py-14">
         <AnimatePresence mode="wait">
           {stage !== 'card' ? (
             <motion.div
@@ -87,7 +77,7 @@ export function IntroExperience({ monogram, onBegin, onSkip }: IntroExperiencePr
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
               >
-                <GaneshLogo className="mb-4 w-40 opacity-90 sm:w-52" />
+                <GaneshLogo tone="ivory" className="mb-4 h-16 w-auto opacity-95 sm:h-20" />
                 <p className="text-center font-display text-3xl font-medium text-ivory sm:text-4xl">
                   A Wedding Invitation
                 </p>
@@ -114,15 +104,19 @@ export function IntroExperience({ monogram, onBegin, onSkip }: IntroExperiencePr
               )}
             </motion.div>
           ) : (
-            <motion.div
+            // Whole card stage is tappable → begins the journey.
+            <motion.button
               key="card-stage"
-              className="w-full"
+              type="button"
+              onClick={onBegin}
+              aria-label="Begin the celebrations"
+              className="w-full cursor-pointer focus-visible:outline"
               initial={reduced ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <InvitationCard onEnter={onBegin} reduced={reduced} />
-            </motion.div>
+              <InvitationCard reduced={reduced} />
+            </motion.button>
           )}
         </AnimatePresence>
       </div>

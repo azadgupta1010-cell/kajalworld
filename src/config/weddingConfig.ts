@@ -24,6 +24,12 @@ export interface EventTheme {
   motif: string
   /** Whether the scene is daytime (affects light styling). */
   daytime: boolean
+  /**
+   * Optional full-page background photo (under /public). When present it is
+   * layered behind a soft dark scrim so text stays readable. Falls back to the
+   * `background` gradient if the file is missing.
+   */
+  backgroundImage?: string
   /** Big brush-style tagline under the title (poster feel). */
   tagline?: string
   /** 3–4 short vibe words shown as a stacked list. */
@@ -63,6 +69,8 @@ export interface EventItem {
   venueConfirmed: boolean
   city?: string
   mapUrl?: string
+  /** When true, the venue is shown as a highlighted banner on the page. */
+  highlightVenue?: boolean
   notes?: string[]
   description?: string
   /** Longer, warm invitation-style line for the dedicated page. */
@@ -201,11 +209,12 @@ export const weddingConfig: WeddingConfig = {
       name: 'Sangeet',
       dateTime: '2026-11-27T16:00:00+05:30',
       timeConfirmed: true,
-      timeLabel: '4:00 P.M.',
+      timeLabel: '4:00 P.M. · Dinner 7:00 P.M.',
       venue: 'Apar Place',
       venueConfirmed: true,
       city: 'Rewari Road, Narnaul, Haryana',
       mapUrl: 'https://maps.app.goo.gl/SqBKoFZ7F9kwWWA98',
+      highlightVenue: true,
       notes: ['Friday, 27th November 2026', 'Programme: 4:00 P.M.', 'Dinner: 7:00 P.M.'],
       description: 'An evening of music, dance and celebration.',
       invite: 'Dance the night away with us at the Sangeet — an evening of music and joy.',
@@ -255,6 +264,7 @@ export const weddingConfig: WeddingConfig = {
         mood: 'A warm, festive henna night',
         background:
           'radial-gradient(120% 120% at 50% 20%, #24573F 0%, #163A2A 50%, #0A1A14 100%)',
+        backgroundImage: '/media/mehndi-bg.jpg',
         accent: '#CDEBB6',
         accentSoft: '#E3C891',
         motif: '🌿',
@@ -291,6 +301,7 @@ export const weddingConfig: WeddingConfig = {
         mood: 'My glow. My vibes. My forever.',
         background:
           'radial-gradient(120% 120% at 50% 12%, #FFE07A 0%, #FFC24D 38%, #F5859E 72%, #D94E86 100%)',
+        backgroundImage: '/media/haldi-bg.jpg',
         accent: '#C01E63',
         accentSoft: '#9D294B',
         motif: '🌼',

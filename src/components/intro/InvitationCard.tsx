@@ -8,7 +8,12 @@ import { staggerContainer, textRise, goldGlow } from '@/motion/variants'
 import { weddingConfig } from '@/config/weddingConfig'
 
 interface InvitationCardProps {
-  onEnter: () => void
+  /**
+   * When provided, a real "Begin" button is rendered (standalone use, e.g. the
+   * static fallback). When omitted, the parent stage handles the tap and this
+   * shows a non-interactive visual cue instead (avoids nested buttons).
+   */
+  onEnter?: () => void
   reduced: boolean
 }
 
@@ -120,15 +125,22 @@ export function InvitationCard({ onEnter, reduced }: InvitationCardProps) {
           {invitation.blessing}
         </motion.p>
 
-        {/* CTA */}
+        {/* CTA — a real button when standalone, else a visual cue (the parent
+            card stage captures the tap to avoid nested buttons). */}
         <motion.div variants={textRise} className="mt-8 flex justify-center">
-          <button
-            type="button"
-            onClick={onEnter}
-            className="rounded-full border border-gold bg-rose-deep px-8 py-3 font-body text-xs font-medium uppercase tracking-[0.22em] text-ivory shadow-gold transition hover:bg-rose focus-visible:outline"
-          >
-            Begin the Celebrations &rarr;
-          </button>
+          {onEnter ? (
+            <button
+              type="button"
+              onClick={onEnter}
+              className="rounded-full border border-gold bg-rose-deep px-8 py-3 font-body text-xs font-medium uppercase tracking-[0.22em] text-ivory shadow-gold transition hover:bg-rose focus-visible:outline"
+            >
+              Begin the Celebrations &rarr;
+            </button>
+          ) : (
+            <span className="rounded-full border border-gold bg-rose-deep px-8 py-3 font-body text-xs font-medium uppercase tracking-[0.22em] text-ivory shadow-gold">
+              Begin the Celebrations &rarr;
+            </span>
+          )}
         </motion.div>
       </GoldFrame>
     </motion.div>

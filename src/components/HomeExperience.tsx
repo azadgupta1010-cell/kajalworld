@@ -31,9 +31,6 @@ export function HomeExperience() {
     router.push(`/events/${firstEvent}`)
   }
 
-  // "Skip" — mark intro seen and just reveal the homepage.
-  const skip = () => markSeen()
-
   const replay = () => {
     clearSeen()
     if (typeof window !== 'undefined') {
@@ -46,11 +43,7 @@ export function HomeExperience() {
       <AnimatePresence mode="wait">
         {!introSeen && (
           <IntroBoundary key="intro" onComplete={beginJourney}>
-            <IntroExperience
-              monogram={weddingConfig.couple.monogram}
-              onBegin={beginJourney}
-              onSkip={skip}
-            />
+            <IntroExperience monogram={weddingConfig.couple.monogram} onBegin={beginJourney} />
           </IntroBoundary>
         )}
       </AnimatePresence>

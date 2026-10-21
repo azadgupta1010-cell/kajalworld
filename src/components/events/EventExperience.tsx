@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { HangingOrnament } from '@/components/decor/HangingOrnament'
@@ -33,8 +33,21 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
   const d = t.decor ?? { ornament: '#C5A16A', ornamentAccent: '#E3C891', leaf: '#5E8C63', flower: '#E8A0B4' }
   const { couple } = weddingConfig
 
-  const ink = t.daytime ? '#3A2416' : '#FFF9F2'
-  const inkSoft = t.daytime ? 'rgba(58,36,22,0.82)' : 'rgba(255,249,242,0.86)'
+  // Background photo: only shown if the file actually loads (graceful fallback
+  // to the gradient otherwise — never a broken image).
+  const [bgLoaded, setBgLoaded] = useState(false)
+  useEffect(() => {
+    if (!t.backgroundImage) return
+    const img = new Image()
+    img.onload = () => setBgLoaded(true)
+    img.onerror = () => setBgLoaded(false)
+    img.src = t.backgroundImage
+  }, [t.backgroundImage])
+
+  // With a photo background, force dark-scrim readable text.
+  const onPhoto = !!t.backgroundImage && bgLoaded
+  const ink = onPhoto ? '#FFF9F2' : t.daytime ? '#3A2416' : '#FFF9F2'
+  const inkSoft = onPhoto ? 'rgba(255,249,242,0.9)' : t.daytime ? 'rgba(58,36,22,0.82)' : 'rgba(255,249,242,0.86)'
 
   // Destination when moving forward: next event, or the main website at the end.
   const goNext = useCallback(() => {
@@ -86,6 +99,25 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
       className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 py-16"
       style={{ background: t.background }}
     >
+      {/* Optional full-page background photo + readability scrim */}
+      {onPhoto && (
+        <>
+          <div
+            className="pointer-events-none absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${t.backgroundImage})` }}
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.6) 100%)',
+            }}
+            aria-hidden="true"
+          />
+        </>
+      )}
+
       {/* Full-screen tap navigation: left half = previous, right half = next.
           Sits beneath the content (z-0) so links/buttons still work. */}
       <button
@@ -191,21 +223,44 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
           }}
         >
           <p className="font-script text-4xl sm:text-5xl" style={{ color: t.titleColor ?? ink }}>
-            {couple.bride.name.split(' ')[0]} &amp; {couple.groom.name.split(' ')[0]}
+            {couple.bride.name} &amp; {couple.groom.name}
           </p>
         </motion.div>
 
-        {/* date + venue */}
-        <motion.div {...rise} className="mt-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 font-body text-sm" style={{ color: inkSoft }}>
-          <span className="flex items-center gap-2">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={d.ornamentAccent} strokeWidth="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-            {formatDate(event.dateTime)}{event.timeLabel ? ` · ${event.timeLabel}` : ''}
-          </span>
-          <span className="flex items-center gap-2">
+        {/* date */}
+        <motion.div {...rise} className="mt-5 flex items-center justify-center gap-2 font-body text-sm" style={{ color: inkSoft }}>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={d.ornamentAccent} strokeWidth="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          {formatDate(event.dateTime)}{event.timeLabel ? ` · ${event.timeLabel}` : ''}
+        </motion.div>
+
+        {/* venue — highlighted banner when flagged, else a simple line */}
+        {event.highlightVenue ? (
+          <motion.div
+            {...rise}
+            className="mt-4 rounded-2xl border px-6 py-3"
+            style={{
+              borderColor: d.ornamentAccent,
+              background: onPhoto ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.08)',
+            }}
+          >
+            <p className="font-body text-[0.65rem] uppercase tracking-[0.3em]" style={{ color: d.ornamentAccent }}>
+              Venue
+            </p>
+            <p className="mt-1 font-display text-2xl font-semibold" style={{ color: ink }}>
+              {event.venue}
+            </p>
+            {event.city && (
+              <p className="font-body text-sm" style={{ color: inkSoft }}>
+                {event.city}
+              </p>
+            )}
+          </motion.div>
+        ) : (
+          <motion.div {...rise} className="mt-3 flex items-center justify-center gap-2 font-body text-sm" style={{ color: inkSoft }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={d.ornamentAccent} strokeWidth="1.6" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 1114 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
             {event.venue}{event.city ? `, ${event.city}` : ''}
-          </span>
-        </motion.div>
+          </motion.div>
+        )}
 
         {!event.venueConfirmed && (
           <motion.span {...rise} className="mt-3 inline-block rounded-full border px-3 py-0.5 font-body text-[0.65rem] uppercase tracking-[0.15em]" style={{ borderColor: d.ornamentAccent, color: inkSoft }}>
@@ -266,11 +321,8 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
           </motion.a>
         )}
 
-        {/* Tap hint — the whole screen advances; left edge goes back */}
-        <motion.div {...rise} className="mt-10 flex flex-col items-center gap-2">
-          <p className="font-body text-[0.7rem] uppercase tracking-[0.3em]" style={{ color: inkSoft }}>
-            {nextSlug ? 'Tap anywhere to continue' : 'Tap anywhere to enter'}
-          </p>
+        {/* subtle progress + forward cue (no instructional text) */}
+        <motion.div {...rise} className="mt-10 flex flex-col items-center gap-3">
           <motion.span
             aria-hidden="true"
             className="text-2xl"
@@ -280,9 +332,8 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
           >
             →
           </motion.span>
-          <span className="mt-1 font-body text-[0.65rem] uppercase tracking-[0.2em]" style={{ color: inkSoft }}>
+          <span className="font-body text-[0.65rem] uppercase tracking-[0.25em]" style={{ color: inkSoft }}>
             {index} / {total}
-            {prevSlug ? '  ·  tap left edge to go back' : ''}
           </span>
         </motion.div>
       </motion.div>
