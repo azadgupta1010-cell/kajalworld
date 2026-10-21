@@ -263,18 +263,18 @@ export const weddingConfig: WeddingConfig = {
       theme: {
         mood: 'A warm, festive henna night',
         background:
-          'radial-gradient(120% 120% at 50% 20%, #24573F 0%, #163A2A 50%, #0A1A14 100%)',
+          'linear-gradient(160deg, #F6F0E2 0%, #EDE3CC 45%, #E4D9BE 100%)',
         backgroundImage: '/media/mehndi-bg.jpg',
-        accent: '#CDEBB6',
-        accentSoft: '#E3C891',
+        accent: '#2E6B3E',
+        accentSoft: '#9C6B2F',
         motif: '🌿',
-        daytime: false,
+        daytime: true,
         tagline: 'Let mehndi tell our story',
         vibeWords: ['Traditions', 'Colours', 'Forever Ours'],
         quote: 'Some get their hands painted. We get our hearts a little brighter.',
-        footline: 'HENNA · MUSIC · MEMORIES',
-        titleColor: '#F3FBEC',
-        decor: { ornament: '#E3C891', ornamentAccent: '#CDEBB6', leaf: '#5E8C63', flower: '#E8A0B4' },
+        footline: 'TRADITIONS · COLOURS · FOREVER OURS',
+        titleColor: '#2E6B3E',
+        decor: { ornament: '#9C6B2F', ornamentAccent: '#2E6B3E', leaf: '#5E8C63', flower: '#C76B7E' },
       },
     },
     {
@@ -300,7 +300,7 @@ export const weddingConfig: WeddingConfig = {
       theme: {
         mood: 'My glow. My vibes. My forever.',
         background:
-          'radial-gradient(120% 120% at 50% 12%, #FFE07A 0%, #FFC24D 38%, #F5859E 72%, #D94E86 100%)',
+          'radial-gradient(120% 120% at 50% 10%, #FBF3DC 0%, #FBE6B0 32%, #F6A7C0 70%, #E86AA0 100%)',
         backgroundImage: '/media/haldi-bg.jpg',
         accent: '#C01E63',
         accentSoft: '#9D294B',

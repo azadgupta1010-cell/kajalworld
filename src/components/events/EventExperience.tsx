@@ -99,20 +99,20 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
       className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 py-16"
       style={{ background: t.background }}
     >
-      {/* Optional full-page background photo + readability scrim */}
+      {/* Optional full-page background poster. The poster artwork already
+          contains the ceremony text, so when present we show it full and keep
+          the on-page overlay minimal (just progress + forward cue). A blurred
+          copy fills the letterbox so there are no empty bars on any phone. */}
       {onPhoto && (
         <>
           <div
-            className="pointer-events-none absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${t.backgroundImage})` }}
+            className="pointer-events-none absolute inset-0 scale-110 bg-cover bg-center blur-2xl"
+            style={{ backgroundImage: `url(${t.backgroundImage})`, opacity: 0.6 }}
             aria-hidden="true"
           />
           <div
-            className="pointer-events-none absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 40%, rgba(0,0,0,0.6) 100%)',
-            }}
+            className="pointer-events-none absolute inset-0 bg-contain bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${t.backgroundImage})` }}
             aria-hidden="true"
           />
         </>
@@ -153,15 +153,18 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         }}
       />
 
-      {/* Hanging ornaments from the top */}
-      <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={170} className="pointer-events-none absolute left-[8%] top-0 opacity-90" />
-      <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={210} className="pointer-events-none absolute left-[20%] top-0 hidden opacity-80 sm:block" />
-      <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={190} className="pointer-events-none absolute right-[10%] top-0 opacity-90" />
-      <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={150} className="pointer-events-none absolute right-[22%] top-0 hidden opacity-80 sm:block" />
-
-      {/* Mandala corners bottom */}
-      <MandalaCorner corner="bl" color={d.ornament} size={200} className="pointer-events-none absolute bottom-0 left-0 opacity-30" />
-      <MandalaCorner corner="br" color={d.ornament} size={200} className="pointer-events-none absolute bottom-0 right-0 opacity-30" />
+      {/* Decorative ornaments — only in styled (no-poster) mode, so they don't
+          clutter a real poster background. */}
+      {!onPhoto && (
+        <>
+          <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={170} className="pointer-events-none absolute left-[8%] top-0 opacity-90" />
+          <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={210} className="pointer-events-none absolute left-[20%] top-0 hidden opacity-80 sm:block" />
+          <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={190} className="pointer-events-none absolute right-[10%] top-0 opacity-90" />
+          <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={150} className="pointer-events-none absolute right-[22%] top-0 hidden opacity-80 sm:block" />
+          <MandalaCorner corner="bl" color={d.ornament} size={200} className="pointer-events-none absolute bottom-0 left-0 opacity-30" />
+          <MandalaCorner corner="br" color={d.ornament} size={200} className="pointer-events-none absolute bottom-0 right-0 opacity-30" />
+        </>
+      )}
 
       {/* journey progress */}
       <div className="absolute left-1/2 top-5 z-20 flex -translate-x-1/2 items-center gap-2">
@@ -175,6 +178,37 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         ))}
       </div>
 
+      {/* Minimal overlay when a real poster background is shown (poster already
+          has all the text). Just a soft forward cue + directions, bottom. */}
+      {onPhoto && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex flex-col items-center gap-3 px-4">
+          {event.mapUrl && (
+            <a
+              href={event.mapUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="pointer-events-auto rounded-full border border-white/70 bg-black/35 px-6 py-2.5 font-body text-xs font-medium uppercase tracking-[0.2em] text-white backdrop-blur transition hover:bg-black/55 focus-visible:outline"
+            >
+              Get Directions &rarr;
+            </a>
+          )}
+          <motion.span
+            aria-hidden="true"
+            className="text-2xl text-white drop-shadow"
+            animate={reduced ? undefined : { x: [0, 6, 0] }}
+            transition={reduced ? undefined : { duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            →
+          </motion.span>
+          <span className="font-body text-[0.65rem] uppercase tracking-[0.25em] text-white/90 drop-shadow">
+            {index} / {total}
+          </span>
+        </div>
+      )}
+
+      {/* Styled content (used when there is no poster image). */}
+      {!onPhoto && (
       <motion.div
         {...container}
         className="pointer-events-none relative z-10 flex w-full max-w-xl flex-col items-center text-center"
@@ -337,6 +371,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
           </span>
         </motion.div>
       </motion.div>
+      )}
     </main>
   )
 }
