@@ -44,10 +44,27 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
     img.src = t.backgroundImage
   }, [t.backgroundImage])
 
-  // With a photo background, force dark-scrim readable text.
-  const onPhoto = !!t.backgroundImage && bgLoaded
-  const ink = onPhoto ? '#FFF9F2' : t.daytime ? '#3A2416' : '#FFF9F2'
-  const inkSoft = onPhoto ? 'rgba(255,249,242,0.9)' : t.daytime ? 'rgba(58,36,22,0.82)' : 'rgba(255,249,242,0.86)'
+  const mode = t.backgroundMode ?? 'framed'
+  const hasImage = !!t.backgroundImage && bgLoaded
+  // "poster" image carries its own text → minimal overlay.
+  // "framed" image is a decorative border → we render text in its centre.
+  const posterMode = hasImage && mode === 'poster'
+  const framedMode = hasImage && mode === 'framed'
+
+  const ink = posterMode
+    ? '#FFF9F2'
+    : framedMode
+      ? t.framedInk ?? '#3A2416'
+      : t.daytime
+        ? '#3A2416'
+        : '#FFF9F2'
+  const inkSoft = posterMode
+    ? 'rgba(255,249,242,0.9)'
+    : framedMode
+      ? t.framedInkSoft ?? 'rgba(58,36,22,0.82)'
+      : t.daytime
+        ? 'rgba(58,36,22,0.82)'
+        : 'rgba(255,249,242,0.86)'
 
   // Destination when moving forward: next event, or the main website at the end.
   const goNext = useCallback(() => {
@@ -99,11 +116,30 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
       className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 py-16"
       style={{ background: t.background }}
     >
-      {/* Optional full-page background poster. The poster artwork already
-          contains the ceremony text, so when present we show it full and keep
-          the on-page overlay minimal (just progress + forward cue). A blurred
-          copy fills the letterbox so there are no empty bars on any phone. */}
-      {onPhoto && (
+      {/* Framed background: a decorative border image with an empty centre.
+          Shown full-bleed (cover) so it fills any phone; text renders in the
+          centre. A soft radial lightener keeps the centre text readable. */}
+      {framedMode && (
+        <>
+          <div
+            className="pointer-events-none absolute inset-0 bg-cover bg-center"
+            style={{ backgroundImage: `url(${t.backgroundImage})` }}
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                'radial-gradient(58% 48% at 50% 48%, rgba(253,248,236,0.72) 0%, rgba(253,248,236,0.45) 55%, transparent 80%)',
+            }}
+            aria-hidden="true"
+          />
+        </>
+      )}
+
+      {/* Poster background: artwork already has all text → show whole (contain)
+          with a blurred letterbox fill and a minimal overlay. */}
+      {posterMode && (
         <>
           <div
             className="pointer-events-none absolute inset-0 scale-110 bg-cover bg-center blur-2xl"
@@ -153,9 +189,9 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         }}
       />
 
-      {/* Decorative ornaments — only in styled (no-poster) mode, so they don't
-          clutter a real poster background. */}
-      {!onPhoto && (
+      {/* Decorative ornaments — only when there is no background image, so they
+          don't clutter a framed/poster background that has its own art. */}
+      {!hasImage && (
         <>
           <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={170} className="pointer-events-none absolute left-[8%] top-0 opacity-90" />
           <HangingOrnament color={d.ornament} accent={d.ornamentAccent} height={210} className="pointer-events-none absolute left-[20%] top-0 hidden opacity-80 sm:block" />
@@ -178,9 +214,9 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         ))}
       </div>
 
-      {/* Minimal overlay when a real poster background is shown (poster already
-          has all the text). Just a soft forward cue + directions, bottom. */}
-      {onPhoto && (
+      {/* Minimal overlay when a POSTER background is shown (poster already has
+          all the text). Just a soft forward cue + directions, bottom. */}
+      {posterMode && (
         <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex flex-col items-center gap-3 px-4">
           {event.mapUrl && (
             <a
@@ -207,8 +243,9 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         </div>
       )}
 
-      {/* Styled content (used when there is no poster image). */}
-      {!onPhoto && (
+      {/* Styled content — shown for gradient styling AND framed backgrounds
+          (text sits in the frame's empty centre). Hidden only in poster mode. */}
+      {!posterMode && (
       <motion.div
         {...container}
         className="pointer-events-none relative z-10 flex w-full max-w-xl flex-col items-center text-center"
@@ -274,7 +311,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
             className="mt-4 rounded-2xl border px-6 py-3"
             style={{
               borderColor: d.ornamentAccent,
-              background: onPhoto ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.08)',
+              background: framedMode ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.08)',
             }}
           >
             <p className="font-body text-[0.65rem] uppercase tracking-[0.3em]" style={{ color: d.ornamentAccent }}>

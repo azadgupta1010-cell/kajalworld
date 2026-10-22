@@ -25,11 +25,23 @@ export interface EventTheme {
   /** Whether the scene is daytime (affects light styling). */
   daytime: boolean
   /**
-   * Optional full-page background photo (under /public). When present it is
-   * layered behind a soft dark scrim so text stays readable. Falls back to the
+   * Optional full-page background photo (under /public). Falls back to the
    * `background` gradient if the file is missing.
    */
   backgroundImage?: string
+  /**
+   * How the background image is used:
+   *  - 'framed'  → a decorative BORDER image with an empty centre; the page
+   *                renders the ceremony text in that centre (e.g. the Mehndi /
+   *                Haldi frames). Image is shown full-bleed (cover).
+   *  - 'poster'  → the image already contains all text; we show it whole
+   *                (contain) and keep on-page text minimal.
+   * Defaults to 'framed'.
+   */
+  backgroundMode?: 'framed' | 'poster'
+  /** Ink colour to use for text when a framed background is active. */
+  framedInk?: string
+  framedInkSoft?: string
   /** Big brush-style tagline under the title (poster feel). */
   tagline?: string
   /** 3–4 short vibe words shown as a stacked list. */
@@ -265,6 +277,9 @@ export const weddingConfig: WeddingConfig = {
         background:
           'linear-gradient(160deg, #F6F0E2 0%, #EDE3CC 45%, #E4D9BE 100%)',
         backgroundImage: '/media/mehndi-bg.jpg',
+        backgroundMode: 'framed',
+        framedInk: '#1F3A2A',
+        framedInkSoft: 'rgba(31,58,42,0.82)',
         accent: '#2E6B3E',
         accentSoft: '#9C6B2F',
         motif: '🌿',
@@ -302,6 +317,9 @@ export const weddingConfig: WeddingConfig = {
         background:
           'radial-gradient(120% 120% at 50% 10%, #FBF3DC 0%, #FBE6B0 32%, #F6A7C0 70%, #E86AA0 100%)',
         backgroundImage: '/media/haldi-bg.jpg',
+        backgroundMode: 'framed',
+        framedInk: '#B01458',
+        framedInkSoft: 'rgba(176,20,88,0.85)',
         accent: '#C01E63',
         accentSoft: '#9D294B',
         motif: '🌼',
