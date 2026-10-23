@@ -11,10 +11,13 @@ import { mediaUrl } from '@/lib/env'
  * every page and the music control is available everywhere.
  */
 export function Providers({ children }: { children: ReactNode }) {
+  const { music } = weddingConfig
+  const playlist = (music.playlist ?? (music.src ? [music.src] : [])).map(mediaUrl)
+
   return (
-    <MusicProvider src={mediaUrl(weddingConfig.music.src)}>
+    <MusicProvider playlist={playlist} src={mediaUrl(music.src)}>
       {children}
-      <MusicToggle title={weddingConfig.music.title} />
+      <MusicToggle title={music.title} />
     </MusicProvider>
   )
 }

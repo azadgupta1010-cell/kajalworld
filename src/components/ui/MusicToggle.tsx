@@ -27,7 +27,7 @@ export function MusicToggle({ title = 'Music' }: MusicToggleProps) {
 
   if (!music?.available) return null
 
-  const { playing, toggle } = music
+  const { playing, toggle, next } = music
 
   return (
     <div className="fixed bottom-5 right-5 z-[80] flex items-center gap-2">
@@ -41,6 +41,21 @@ export function MusicToggle({ title = 'Music' }: MusicToggleProps) {
         >
           Tap for music ♫
         </span>
+      )}
+
+      {/* Skip to another random song — only shown while playing. */}
+      {playing && (
+        <button
+          type="button"
+          onClick={next}
+          aria-label="Play another song"
+          className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-gold/70 bg-plum/90 shadow-gold transition hover:bg-plum focus-visible:outline"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#E3C891" aria-hidden="true">
+            <path d="M6 5v14l9-7z" />
+            <rect x="16" y="5" width="3" height="14" rx="1" />
+          </svg>
+        </button>
       )}
 
       <button

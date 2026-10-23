@@ -39,6 +39,12 @@ export interface EventTheme {
    * Defaults to 'framed'.
    */
   backgroundMode?: 'framed' | 'poster'
+  /**
+   * Where the ceremony text sits inside a framed background. Use 'right' when
+   * the art has a subject on the left and empty space on the right (e.g. the
+   * Mehndi frame with the bride on the left). Defaults to 'center'.
+   */
+  framedAlign?: 'center' | 'left' | 'right'
   /** Ink colour to use for text when a framed background is active. */
   framedInk?: string
   framedInkSoft?: string
@@ -137,9 +143,15 @@ export interface WeddingConfig {
     engagement: string[]
   }
   music: {
-    /** Background music file. Never autoplays with sound. */
+    /** Fallback single track (used if playlist is empty). */
     src?: string
     title: string
+    /**
+     * Playlist of background tracks (filenames in the Supabase media bucket).
+     * A random track is chosen on each load; when one ends the next random
+     * track plays — so guests hear a different song each time.
+     */
+    playlist?: string[]
   }
   credit: {
     madeBy: string
@@ -296,8 +308,9 @@ export const weddingConfig: WeddingConfig = {
           'linear-gradient(160deg, #F6F0E2 0%, #EDE3CC 45%, #E4D9BE 100%)',
         backgroundImage: '/media/mehndi-bg.jpg',
         backgroundMode: 'framed',
-        framedInk: '#1F3A2A',
-        framedInkSoft: 'rgba(31,58,42,0.82)',
+        framedAlign: 'right',
+        framedInk: '#5A2A33',
+        framedInkSoft: 'rgba(90,42,51,0.82)',
         accent: '#2E6B3E',
         accentSoft: '#9C6B2F',
         motif: '🌿',
@@ -405,8 +418,17 @@ export const weddingConfig: WeddingConfig = {
   },
 
   music: {
-    src: '/media/gira.mp3', // drop the background music file here
-    title: 'Gira',
+    src: '/media/gira.mp3', // fallback track
+    title: 'Wedding Music',
+    // All tracks live in the Supabase media bucket. A random one plays each
+    // visit, and a new random track starts when the current one ends.
+    playlist: [
+      '/media/gira.mp3',
+      '/media/Kut Kut Bajra.mp3',
+      '/media/Aaj Sajeya.mp4',
+      '/media/Chitta.mp4',
+      '/media/Kale Rang Da Paranda.mp4',
+    ],
   },
 
   credit: {

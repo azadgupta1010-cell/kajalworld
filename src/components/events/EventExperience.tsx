@@ -55,6 +55,9 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
   const posterMode = hasImage && mode === 'poster'
   const framedMode = hasImage && mode === 'framed'
 
+  // Where framed-mode text sits (for art with the subject on one side).
+  const framedAlign = t.framedAlign ?? 'center'
+
   const ink = posterMode
     ? '#FFF9F2'
     : framedMode
@@ -83,6 +86,21 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
     if (nextSlug) router.prefetch(`/events/${nextSlug}`)
     if (prevSlug) router.prefetch(`/events/${prevSlug}`)
   }, [router, nextSlug, prevSlug])
+
+  // Warm the browser cache with every event's background image so moving
+  // through the journey feels instant (no per-page image wait).
+  useEffect(() => {
+    const urls = weddingConfig.events
+      .map((e) => e.theme.backgroundImage)
+      .filter(Boolean)
+      .map((p) => mediaUrl(p as string))
+    const imgs = urls.map((u) => {
+      const img = new Image()
+      img.src = u
+      return img
+    })
+    return () => imgs.forEach((i) => (i.src = ''))
+  }, [])
 
   // Keyboard: arrows / space advance, left goes back.
   useEffect(() => {
@@ -126,8 +144,8 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
       {framedMode && (
         <>
           <div
-            className="pointer-events-none absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${bg})` }}
+            className="pointer-events-none absolute inset-0 bg-cover bg-center transition-opacity duration-700"
+            style={{ backgroundImage: `url(${bg})`, opacity: bgLoaded ? 1 : 0 }}
             aria-hidden="true"
           />
           {/* very light centre wash — just enough for text legibility, lets
@@ -258,7 +276,14 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         {...container}
         className={
           'pointer-events-none relative z-10 flex flex-col items-center text-center ' +
-          (framedMode ? 'w-[88%] max-w-sm px-2' : 'w-full max-w-xl')
+          (framedMode
+            ? 'max-w-sm px-2 ' +
+              (framedAlign === 'right'
+                ? 'w-[52%] ml-auto mr-[3%] sm:mr-[6%]'
+                : framedAlign === 'left'
+                  ? 'w-[52%] mr-auto ml-[3%] sm:ml-[6%]'
+                  : 'w-[88%]')
+            : 'w-full max-w-xl')
         }
         style={
           framedMode
