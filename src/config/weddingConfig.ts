@@ -258,9 +258,9 @@ export const weddingConfig: WeddingConfig = {
       icon: 'sangeet',
       order: 2,
       dressCode: {
-        men: 'Black Blue party wear',
-        women: 'Black Blue party wear',
-        note: 'Dress in your own style, add a little sparkle and get ready to shine.',
+        men: 'Black & blue party wear',
+        women: 'Black & blue party wear',
+        note: 'Black & blue party wear',
       },
       theme: {
         mood: 'A glamorous night of music',
