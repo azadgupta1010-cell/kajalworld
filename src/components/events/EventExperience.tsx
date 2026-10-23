@@ -57,6 +57,9 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
 
   // Where framed-mode text sits (for art with the subject on one side).
   const framedAlign = t.framedAlign ?? 'center'
+  // A narrow side column (framed art with subject on one side) needs smaller
+  // type + tighter spacing so everything fits one screen without scrolling.
+  const narrow = framedMode && framedAlign !== 'center'
 
   const ink = posterMode
     ? '#FFF9F2'
@@ -135,7 +138,10 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
 
   return (
     <main
-      className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 py-16"
+      className={
+        'relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 ' +
+        (framedMode ? 'py-6' : 'py-16')
+      }
       style={{ background: t.background }}
     >
       {/* Framed background: a decorative border image with an empty centre.
@@ -295,12 +301,12 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
             : undefined
         }
       >
-        <motion.p {...rise} className="font-body text-[0.7rem] font-medium uppercase tracking-[0.4em]" style={{ color: d.ornamentAccent }}>
+        <motion.p {...rise} className={'font-body font-medium uppercase ' + (narrow ? 'text-[0.6rem] tracking-[0.3em]' : 'text-[0.7rem] tracking-[0.4em]')} style={{ color: d.ornamentAccent }}>
           You&apos;re invited to
         </motion.p>
 
         {/* Title (botanical sprays only in gradient mode — framed art has its own) */}
-        <motion.div {...rise} className="relative mt-2 flex items-center justify-center">
+        <motion.div {...rise} className={'relative flex items-center justify-center ' + (narrow ? 'mt-1' : 'mt-2')}>
           {!framedMode && (
             <>
               <BotanicalSpray leaf={d.leaf} flower={d.flower} size={120} className="absolute -left-4 -top-6 hidden opacity-90 sm:block" />
@@ -310,7 +316,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
           <h1
             className={
               'font-display font-semibold uppercase italic leading-[0.92] tracking-tight ' +
-              (framedMode ? 'text-5xl sm:text-6xl' : 'text-6xl sm:text-8xl')
+              (narrow ? 'text-3xl sm:text-4xl' : framedMode ? 'text-5xl sm:text-6xl' : 'text-6xl sm:text-8xl')
             }
             style={{
               color: framedMode ? ink : t.titleColor ?? ink,
@@ -322,16 +328,16 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         </motion.div>
 
         {t.tagline && (
-          <motion.p {...rise} className="mt-3 font-script text-3xl sm:text-4xl" style={{ color: d.ornamentAccent }}>
+          <motion.p {...rise} className={'font-script ' + (narrow ? 'mt-1.5 text-2xl' : 'mt-3 text-3xl sm:text-4xl')} style={{ color: d.ornamentAccent }}>
             {t.tagline}
           </motion.p>
         )}
 
         {t.vibeWords && (
-          <motion.div {...rise} className="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+          <motion.div {...rise} className={'flex flex-wrap items-center justify-center ' + (narrow ? 'mt-2 gap-x-2 gap-y-0.5' : 'mt-4 gap-x-3 gap-y-1')}>
             {t.vibeWords.map((w, i) => (
-              <span key={w} className="flex items-center gap-3">
-                <span className="font-script text-xl sm:text-2xl" style={{ color: ink }}>{w}</span>
+              <span key={w} className={'flex items-center ' + (narrow ? 'gap-2' : 'gap-3')}>
+                <span className={'font-script ' + (narrow ? 'text-base' : 'text-xl sm:text-2xl')} style={{ color: ink }}>{w}</span>
                 {i < t.vibeWords!.length - 1 && <span style={{ color: d.ornamentAccent }} aria-hidden="true">✦</span>}
               </span>
             ))}
@@ -341,21 +347,21 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         {/* couple name band (brushy pill) */}
         <motion.div
           {...rise}
-          className="mt-6 rounded-full px-10 py-2.5"
+          className={'rounded-full ' + (narrow ? 'mt-3 px-5 py-1.5' : 'mt-6 px-10 py-2.5')}
           style={{
             background: t.daytime
               ? 'linear-gradient(90deg, transparent, rgba(192,30,99,0.22), transparent)'
               : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
           }}
         >
-          <p className="font-script text-4xl sm:text-5xl" style={{ color: framedMode ? ink : t.titleColor ?? ink }}>
+          <p className={'font-script ' + (narrow ? 'text-2xl' : 'text-4xl sm:text-5xl')} style={{ color: framedMode ? ink : t.titleColor ?? ink }}>
             {couple.bride.name} &amp; {couple.groom.name}
           </p>
         </motion.div>
 
         {/* date (+ time unless hidden) */}
         {!event.hideTime && (
-          <motion.div {...rise} className="mt-5 flex items-center justify-center gap-2 font-body text-sm" style={{ color: inkSoft }}>
+          <motion.div {...rise} className={'flex items-center justify-center gap-2 font-body ' + (narrow ? 'mt-3 text-xs' : 'mt-5 text-sm')} style={{ color: inkSoft }}>
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={d.ornamentAccent} strokeWidth="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
             {formatDate(event.dateTime)}{event.timeLabel ? ` · ${event.timeLabel}` : ''}
           </motion.div>
@@ -398,7 +404,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
           </motion.span>
         )}
 
-        {t.quote && (
+        {t.quote && !narrow && (
           <motion.p {...rise} className="mt-5 max-w-md font-serif text-lg italic leading-relaxed" style={{ color: inkSoft }}>
             “{t.quote}”
           </motion.p>
@@ -407,7 +413,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         {event.dressCode && (
           <motion.div
             {...rise}
-            className="mt-6 w-full max-w-md rounded-3xl border p-5"
+            className={'w-full max-w-md rounded-3xl border ' + (narrow ? 'mt-4 p-3.5' : 'mt-6 p-5')}
             style={{
               borderColor: framedMode ? `${d.ornamentAccent}66` : t.daytime ? 'rgba(157,41,75,0.25)' : 'rgba(255,255,255,0.18)',
               background: framedMode
@@ -420,23 +426,23 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
           >
             <p className="font-body text-[0.7rem] font-semibold uppercase tracking-[0.25em]" style={{ color: d.ornamentAccent }}>Dress Code</p>
             {event.dressCode.note ? (
-              <p className="mt-2 font-serif text-base leading-relaxed" style={{ color: ink }}>{event.dressCode.note}</p>
+              <p className={'font-serif leading-relaxed ' + (narrow ? 'mt-1.5 text-sm' : 'mt-2 text-base')} style={{ color: ink }}>{event.dressCode.note}</p>
             ) : (
-              <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <div className={'grid ' + (narrow ? 'mt-2 gap-2' : 'mt-3 gap-3 sm:grid-cols-2')}>
                 <div>
                   <p className="font-body text-[0.7rem] uppercase tracking-[0.2em]" style={{ color: inkSoft }}>Men</p>
-                  <p className="mt-0.5 font-serif text-base" style={{ color: ink }}>{event.dressCode.men}</p>
+                  <p className={'font-serif ' + (narrow ? 'mt-0.5 text-sm' : 'mt-0.5 text-base')} style={{ color: ink }}>{event.dressCode.men}</p>
                 </div>
                 <div>
                   <p className="font-body text-[0.7rem] uppercase tracking-[0.2em]" style={{ color: inkSoft }}>Women</p>
-                  <p className="mt-0.5 font-serif text-base" style={{ color: ink }}>{event.dressCode.women}</p>
+                  <p className={'font-serif ' + (narrow ? 'mt-0.5 text-sm' : 'mt-0.5 text-base')} style={{ color: ink }}>{event.dressCode.women}</p>
                 </div>
               </div>
             )}
           </motion.div>
         )}
 
-        {t.footline && (
+        {t.footline && !narrow && (
           <motion.p {...rise} className="mt-6 font-body text-[0.65rem] font-medium uppercase tracking-[0.3em]" style={{ color: inkSoft }}>
             {t.footline}
           </motion.p>
@@ -448,7 +454,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
             href={event.mapUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="pointer-events-auto mt-6 inline-flex items-center gap-2 rounded-full border px-6 py-2.5 font-body text-xs font-medium uppercase tracking-[0.2em] transition hover:opacity-80 focus-visible:outline"
+            className={'pointer-events-auto inline-flex items-center gap-2 rounded-full border font-body font-medium uppercase tracking-[0.2em] transition hover:opacity-80 focus-visible:outline ' + (narrow ? 'mt-4 px-4 py-2 text-[0.7rem]' : 'mt-6 px-6 py-2.5 text-xs')}
             style={{ borderColor: d.ornamentAccent, color: ink }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -457,7 +463,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         )}
 
         {/* subtle progress + forward cue (no instructional text) */}
-        <motion.div {...rise} className="mt-10 flex flex-col items-center gap-3">
+        <motion.div {...rise} className={'flex flex-col items-center ' + (narrow ? 'mt-5 gap-1.5' : 'mt-10 gap-3')}>
           <motion.span
             aria-hidden="true"
             className="text-2xl"
