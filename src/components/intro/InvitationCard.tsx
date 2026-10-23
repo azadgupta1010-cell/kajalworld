@@ -70,7 +70,7 @@ export function InvitationCard({ onEnter, reduced }: InvitationCardProps) {
           variants={textRise}
           className="mx-auto mt-5 max-w-sm text-center font-body text-[0.8rem] leading-relaxed text-rose-deep/75"
         >
-          {invitation.familyMessage}
+          request the pleasure of your company at the wedding of
         </motion.p>
 
         {/* Couple names — the centrepiece */}
@@ -89,16 +89,6 @@ export function InvitationCard({ onEnter, reduced }: InvitationCardProps) {
             {couple.groom.name}
           </h1>
         </motion.div>
-
-        {/* Parentage of both sides */}
-        <motion.p
-          variants={textRise}
-          className="mt-4 text-center font-body text-[0.72rem] leading-relaxed text-rose-deep/70"
-        >
-          D/o {invitation.brideParents}
-          <br />
-          S/o {invitation.groomParents}
-        </motion.p>
 
         <motion.div variants={textRise} className="mt-6 flex justify-center">
           <GoldDivider width={180} />

@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { Envelope } from '@/components/intro/Envelope'
 import { InvitationCard } from '@/components/intro/InvitationCard'
 import { FloralCorner } from '@/components/decor/FloralCorner'
-import { GaneshLogo } from '@/components/decor/GaneshLogo'
+import { Monogram } from '@/components/decor/Monogram'
 import { useReducedMotionPref } from '@/hooks/useReducedMotion'
 import { useMusic } from '@/components/audio/MusicContext'
 
@@ -77,7 +77,7 @@ export function IntroExperience({ monogram, onBegin }: IntroExperienceProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
               >
-                <GaneshLogo tone="ivory" className="mb-4 h-16 w-auto opacity-95 sm:h-20" />
+                <Monogram tone="ivory" size={96} className="mb-4 opacity-95" />
                 <p className="text-center font-display text-3xl font-medium text-ivory sm:text-4xl">
                   A Wedding Invitation
                 </p>

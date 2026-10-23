@@ -126,11 +126,13 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
             style={{ backgroundImage: `url(${t.backgroundImage})` }}
             aria-hidden="true"
           />
+          {/* very light centre wash — just enough for text legibility, lets
+              the poster art show through (no heavy white panel) */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'radial-gradient(60% 50% at 50% 48%, rgba(253,248,236,0.85) 0%, rgba(253,248,236,0.6) 52%, rgba(253,248,236,0.15) 72%, transparent 85%)',
+                'radial-gradient(60% 48% at 50% 48%, rgba(253,248,236,0.28) 0%, rgba(253,248,236,0.12) 55%, transparent 78%)',
             }}
             aria-hidden="true"
           />
@@ -252,16 +254,14 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         {...container}
         className={
           'pointer-events-none relative z-10 flex flex-col items-center text-center ' +
-          (framedMode
-            ? 'w-[86%] max-w-sm rounded-[28px] px-5 py-7 sm:px-7'
-            : 'w-full max-w-xl')
+          (framedMode ? 'w-[88%] max-w-sm px-2' : 'w-full max-w-xl')
         }
         style={
           framedMode
             ? {
-                background: 'rgba(253,248,236,0.78)',
-                boxShadow: '0 10px 40px -12px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(197,161,106,0.5)',
-                backdropFilter: 'blur(2px)',
+                // No white panel — sit directly on the poster. A soft text
+                // shadow keeps text readable against the art.
+                textShadow: '0 1px 10px rgba(255,249,236,0.9), 0 1px 3px rgba(255,249,236,0.9)',
               }
             : undefined
         }
@@ -324,20 +324,24 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
           </p>
         </motion.div>
 
-        {/* date */}
-        <motion.div {...rise} className="mt-5 flex items-center justify-center gap-2 font-body text-sm" style={{ color: inkSoft }}>
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={d.ornamentAccent} strokeWidth="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-          {formatDate(event.dateTime)}{event.timeLabel ? ` · ${event.timeLabel}` : ''}
-        </motion.div>
+        {/* date (+ time unless hidden) */}
+        {!event.hideTime && (
+          <motion.div {...rise} className="mt-5 flex items-center justify-center gap-2 font-body text-sm" style={{ color: inkSoft }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={d.ornamentAccent} strokeWidth="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            {formatDate(event.dateTime)}{event.timeLabel ? ` · ${event.timeLabel}` : ''}
+          </motion.div>
+        )}
 
-        {/* venue — highlighted banner when flagged, else a simple line */}
-        {event.highlightVenue ? (
+        {/* venue — hidden entirely when flagged; highlighted banner when
+            highlightVenue; else a simple line */}
+        {event.hideVenue ? null : event.highlightVenue ? (
           <motion.div
             {...rise}
             className="mt-4 rounded-2xl border px-6 py-3"
             style={{
               borderColor: d.ornamentAccent,
-              background: framedMode ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.08)',
+              background: framedMode ? 'rgba(255,249,236,0.3)' : 'rgba(255,255,255,0.08)',
+              backdropFilter: framedMode ? 'blur(3px)' : undefined,
             }}
           >
             <p className="font-body text-[0.65rem] uppercase tracking-[0.3em]" style={{ color: d.ornamentAccent }}>
@@ -359,7 +363,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
           </motion.div>
         )}
 
-        {!event.venueConfirmed && (
+        {!event.hideVenue && !event.venueConfirmed && (
           <motion.span {...rise} className="mt-3 inline-block rounded-full border px-3 py-0.5 font-body text-[0.65rem] uppercase tracking-[0.15em]" style={{ borderColor: d.ornamentAccent, color: inkSoft }}>
             Venue to be confirmed
           </motion.span>
@@ -374,10 +378,15 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         {event.dressCode && (
           <motion.div
             {...rise}
-            className="mt-6 w-full max-w-md rounded-3xl border p-5 backdrop-blur-[2px]"
+            className="mt-6 w-full max-w-md rounded-3xl border p-5"
             style={{
-              borderColor: t.daytime ? 'rgba(157,41,75,0.25)' : 'rgba(255,255,255,0.18)',
-              background: t.daytime ? 'rgba(255,255,255,0.32)' : 'rgba(255,255,255,0.06)',
+              borderColor: framedMode ? `${d.ornamentAccent}66` : t.daytime ? 'rgba(157,41,75,0.25)' : 'rgba(255,255,255,0.18)',
+              background: framedMode
+                ? 'rgba(255,249,236,0.35)'
+                : t.daytime
+                  ? 'rgba(255,255,255,0.32)'
+                  : 'rgba(255,255,255,0.06)',
+              backdropFilter: framedMode ? 'blur(3px)' : undefined,
             }}
           >
             <p className="font-body text-[0.7rem] font-semibold uppercase tracking-[0.25em]" style={{ color: d.ornamentAccent }}>Dress Code</p>

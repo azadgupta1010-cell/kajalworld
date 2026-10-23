@@ -1,68 +1,48 @@
-'use client'
-
-import { useState } from 'react'
-import { weddingConfig } from '@/config/weddingConfig'
-
 interface GaneshLogoProps {
   className?: string
-  /** Colour for the fallback text version. */
+  /** Colour for the mark. */
   tone?: 'gold' | 'ivory' | 'green'
 }
 
 const toneColor: Record<NonNullable<GaneshLogoProps['tone']>, string> = {
-  gold: '#E3C891',
+  gold: '#C5A16A',
   ivory: '#FFF9F2',
-  green: '#0E3A2A',
+  green: '#1F5A3A',
 }
 
 /**
- * Shri Ganeshai Namah mark. Uses the real uploaded logo image when present at
- * weddingConfig.assets.ganeshLogo; if the file is missing it degrades to an
- * elegant text fallback so the page is never broken and nothing is faked.
- *
- * To use the real logo: drop the file at /public/media/ganesh-logo.png
+ * "Shri Ganeshai Namah" mark — pure SVG so it ALWAYS renders (no external
+ * image dependency, which was flickering). An Om glyph above an elegant
+ * script line.
  */
 export function GaneshLogo({ className, tone = 'gold' }: GaneshLogoProps) {
-  const src = weddingConfig.assets.ganeshLogo
-  const [failed, setFailed] = useState(false)
-
-  if (src && !failed) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return (
-      <img
-        src={src}
-        alt="Shri Ganeshai Namah"
-        className={className}
-        onError={() => setFailed(true)}
-        loading="eager"
-      />
-    )
-  }
-
-  // Elegant text + glyph fallback (used until the real logo file is added).
   const c = toneColor[tone]
   return (
     <svg
-      viewBox="0 0 320 96"
+      viewBox="0 0 320 110"
       className={className}
       role="img"
       aria-label="Shri Ganeshai Namah"
     >
-      {/* Om / Ganesh glyph */}
+      {/* Om glyph */}
       <text
         x="160"
-        y="34"
+        y="42"
         textAnchor="middle"
         dominantBaseline="middle"
-        fontFamily="'Noto Sans', system-ui, sans-serif"
-        fontSize="34"
+        fontFamily="'Noto Sans Devanagari', 'Noto Sans', system-ui, sans-serif"
+        fontSize="44"
         fill={c}
       >
         ॐ
       </text>
+      {/* small flanking flourishes */}
+      <path d="M70 60 q40 -10 80 0" fill="none" stroke={c} strokeWidth="1" opacity="0.6" />
+      <path d="M170 60 q40 -10 80 0" fill="none" stroke={c} strokeWidth="1" opacity="0.6" />
+      {/* Script line */}
       <text
         x="160"
-        y="74"
+        y="88"
         textAnchor="middle"
         dominantBaseline="middle"
         fontFamily="var(--font-script), 'Cormorant Garamond', Georgia, serif"

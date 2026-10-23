@@ -83,6 +83,10 @@ export interface EventItem {
   mapUrl?: string
   /** When true, the venue is shown as a highlighted banner on the page. */
   highlightVenue?: boolean
+  /** Hide the venue line on the dedicated page (e.g. Tilak not finalised). */
+  hideVenue?: boolean
+  /** Hide the time/date meta line on the dedicated page. */
+  hideTime?: boolean
   notes?: string[]
   description?: string
   /** Longer, warm invitation-style line for the dedicated page. */
@@ -194,6 +198,8 @@ export const weddingConfig: WeddingConfig = {
       venue: 'Narnaul',
       venueConfirmed: false,
       city: 'Narnaul, Haryana',
+      hideVenue: true,
+      hideTime: true,
       notes: ['Friday, 20th November 2026', 'At 9:15 A.M.'],
       description: 'The ceremonial beginning of the wedding celebrations.',
       invite: 'We warmly invite you to join us as the celebrations begin with the Tilak ceremony.',
@@ -237,8 +243,9 @@ export const weddingConfig: WeddingConfig = {
       icon: 'sangeet',
       order: 2,
       dressCode: {
-        men: 'Dark party wear — black or blue',
-        women: 'Dark party wear — black or blue',
+        men: 'Black / Blue party wear',
+        women: 'Black / Blue party wear',
+        note: 'Dress in your own style, add a little sparkle and get ready to shine.',
       },
       theme: {
         mood: 'A glamorous night of music',
@@ -252,7 +259,7 @@ export const weddingConfig: WeddingConfig = {
         accentSoft: '#C5A16A',
         motif: '🎶',
         daytime: false,
-        tagline: 'Let the music play',
+        tagline: 'An evening of love, laughter & a little sparkle',
         vibeWords: ['Music', 'Dance', 'Lights', 'Celebration'],
         quote: 'Tonight we dance like nobody’s watching.',
         footline: 'RHYTHM · GLAMOUR · JOY',
@@ -269,7 +276,7 @@ export const weddingConfig: WeddingConfig = {
       timeLabel: '6:00 P.M.',
       venue: 'Gorakhpur',
       venueConfirmed: false,
-      city: 'Gorakhpur, Uttar Pradesh',
+      city: 'Uttar Pradesh',
       mapUrl: 'https://maps.app.goo.gl/a6v4Y1LwZQnUiRD16',
       notes: ['Wednesday, 2nd December 2026', '6:00 P.M. onwards'],
       description: 'A colourful night of henna, music and song.',
@@ -309,7 +316,7 @@ export const weddingConfig: WeddingConfig = {
       timeLabel: '11:00 A.M.',
       venue: 'Gorakhpur',
       venueConfirmed: false,
-      city: 'Gorakhpur, Uttar Pradesh',
+      city: 'Uttar Pradesh',
       mapUrl: 'https://maps.app.goo.gl/a6v4Y1LwZQnUiRD16',
       notes: ['Thursday, 3rd December 2026', '11:00 A.M. onwards'],
       description: 'The auspicious turmeric ceremony, under the morning sun.',
@@ -357,9 +364,9 @@ export const weddingConfig: WeddingConfig = {
       icon: 'wedding',
       order: 5,
       dressCode: {
-        men: 'Wear whatever makes you feel your most elegant',
-        women: 'Wear whatever makes you feel your most elegant',
-        note: 'There is no fixed dress code for the wedding. Simply wear whatever you find beautiful and feel wonderful in — your presence is what matters most to us.',
+        men: '',
+        women: '',
+        note: 'Wear what you love, bring your blessings, and let’s make memories together.',
       },
       theme: {
         mood: 'A luxurious wedding night under the stars',
