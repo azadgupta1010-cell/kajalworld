@@ -17,6 +17,15 @@ dist
 # misc
 .DS_Store
 *.pem
+*.log
+nb.log
+nb2.log
+tc.log
+build.log
+b2.log
+t.log
+testout.log
+buildout.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
