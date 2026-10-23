@@ -130,7 +130,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
             className="pointer-events-none absolute inset-0"
             style={{
               background:
-                'radial-gradient(58% 48% at 50% 48%, rgba(253,248,236,0.72) 0%, rgba(253,248,236,0.45) 55%, transparent 80%)',
+                'radial-gradient(60% 50% at 50% 48%, rgba(253,248,236,0.85) 0%, rgba(253,248,236,0.6) 52%, rgba(253,248,236,0.15) 72%, transparent 85%)',
             }}
             aria-hidden="true"
           />
@@ -244,23 +244,49 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
       )}
 
       {/* Styled content — shown for gradient styling AND framed backgrounds
-          (text sits in the frame's empty centre). Hidden only in poster mode. */}
+          (text sits in the frame's empty centre). Hidden only in poster mode.
+          In framed mode it sits in a soft readable panel, narrower so it stays
+          inside the frame's empty centre. */}
       {!posterMode && (
       <motion.div
         {...container}
-        className="pointer-events-none relative z-10 flex w-full max-w-xl flex-col items-center text-center"
+        className={
+          'pointer-events-none relative z-10 flex flex-col items-center text-center ' +
+          (framedMode
+            ? 'w-[86%] max-w-sm rounded-[28px] px-5 py-7 sm:px-7'
+            : 'w-full max-w-xl')
+        }
+        style={
+          framedMode
+            ? {
+                background: 'rgba(253,248,236,0.78)',
+                boxShadow: '0 10px 40px -12px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(197,161,106,0.5)',
+                backdropFilter: 'blur(2px)',
+              }
+            : undefined
+        }
       >
         <motion.p {...rise} className="font-body text-[0.7rem] font-medium uppercase tracking-[0.4em]" style={{ color: d.ornamentAccent }}>
           You&apos;re invited to
         </motion.p>
 
-        {/* Title framed by botanical sprays */}
+        {/* Title (botanical sprays only in gradient mode — framed art has its own) */}
         <motion.div {...rise} className="relative mt-2 flex items-center justify-center">
-          <BotanicalSpray leaf={d.leaf} flower={d.flower} size={120} className="absolute -left-4 -top-6 hidden opacity-90 sm:block" />
-          <BotanicalSpray leaf={d.leaf} flower={d.flower} size={120} flip className="absolute -right-4 -top-6 hidden opacity-90 sm:block" />
+          {!framedMode && (
+            <>
+              <BotanicalSpray leaf={d.leaf} flower={d.flower} size={120} className="absolute -left-4 -top-6 hidden opacity-90 sm:block" />
+              <BotanicalSpray leaf={d.leaf} flower={d.flower} size={120} flip className="absolute -right-4 -top-6 hidden opacity-90 sm:block" />
+            </>
+          )}
           <h1
-            className="font-display text-6xl font-semibold uppercase italic leading-[0.92] tracking-tight sm:text-8xl"
-            style={{ color: t.titleColor ?? ink, textShadow: '0 2px 20px rgba(0,0,0,0.2)' }}
+            className={
+              'font-display font-semibold uppercase italic leading-[0.92] tracking-tight ' +
+              (framedMode ? 'text-5xl sm:text-6xl' : 'text-6xl sm:text-8xl')
+            }
+            style={{
+              color: framedMode ? ink : t.titleColor ?? ink,
+              textShadow: framedMode ? 'none' : '0 2px 20px rgba(0,0,0,0.2)',
+            }}
           >
             {event.name}
           </h1>
@@ -293,7 +319,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
               : 'linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent)',
           }}
         >
-          <p className="font-script text-4xl sm:text-5xl" style={{ color: t.titleColor ?? ink }}>
+          <p className="font-script text-4xl sm:text-5xl" style={{ color: framedMode ? ink : t.titleColor ?? ink }}>
             {couple.bride.name} &amp; {couple.groom.name}
           </p>
         </motion.div>
