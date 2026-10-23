@@ -17,6 +17,26 @@ export const isSupabaseConfigured =
   !!env.supabaseAnonKey &&
   !env.supabaseUrl.includes('YOUR-PROJECT')
 
+/**
+ * Resolve a media reference to its final URL.
+ * All site media now lives in the Supabase Storage "media" bucket, so a
+ * reference like "/media/gira.mp3" is rewritten to the bucket's public URL.
+ * Absolute URLs (http...) are returned unchanged. When Supabase is not
+ * configured (local dev without env), it falls back to the local path so the
+ * app still renders.
+ */
+export function mediaUrl(ref?: string | null): string {
+  if (!ref) return ''
+  if (ref.startsWith('http://') || ref.startsWith('https://')) return ref
+  const file = ref.replace(/^\/?media\//, '').replace(/^\//, '')
+  if (!isSupabaseConfigured) return `/media/${file}`
+  const encoded = file
+    .split('/')
+    .map((seg) => encodeURIComponent(seg))
+    .join('/')
+  return `${env.supabaseUrl}/storage/v1/object/public/media/${encoded}`
+}
+
 /** Server-only secrets. Never import this into a client component. */
 export function serverEnv() {
   return {

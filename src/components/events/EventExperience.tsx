@@ -8,6 +8,7 @@ import { BotanicalSpray } from '@/components/decor/BotanicalSpray'
 import { MandalaCorner } from '@/components/decor/MandalaCorner'
 import { useReducedMotionPref } from '@/hooks/useReducedMotion'
 import { formatDate } from '@/lib/datetime'
+import { mediaUrl } from '@/lib/env'
 import { weddingConfig, type EventItem } from '@/config/weddingConfig'
 
 interface EventExperienceProps {
@@ -33,19 +34,22 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
   const d = t.decor ?? { ornament: '#C5A16A', ornamentAccent: '#E3C891', leaf: '#5E8C63', flower: '#E8A0B4' }
   const { couple } = weddingConfig
 
-  // Background photo: only shown if the file actually loads (graceful fallback
-  // to the gradient otherwise — never a broken image).
+  // Background photo now lives in the Supabase media bucket.
+  const bg = t.backgroundImage ? mediaUrl(t.backgroundImage) : ''
+
+  // Only show it if the file actually loads (graceful fallback to the gradient
+  // otherwise — never a broken image).
   const [bgLoaded, setBgLoaded] = useState(false)
   useEffect(() => {
-    if (!t.backgroundImage) return
+    if (!bg) return
     const img = new Image()
     img.onload = () => setBgLoaded(true)
     img.onerror = () => setBgLoaded(false)
-    img.src = t.backgroundImage
-  }, [t.backgroundImage])
+    img.src = bg
+  }, [bg])
 
   const mode = t.backgroundMode ?? 'framed'
-  const hasImage = !!t.backgroundImage && bgLoaded
+  const hasImage = !!bg && bgLoaded
   // "poster" image carries its own text → minimal overlay.
   // "framed" image is a decorative border → we render text in its centre.
   const posterMode = hasImage && mode === 'poster'
@@ -123,7 +127,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         <>
           <div
             className="pointer-events-none absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${t.backgroundImage})` }}
+            style={{ backgroundImage: `url(${bg})` }}
             aria-hidden="true"
           />
           {/* very light centre wash — just enough for text legibility, lets
@@ -145,12 +149,12 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         <>
           <div
             className="pointer-events-none absolute inset-0 scale-110 bg-cover bg-center blur-2xl"
-            style={{ backgroundImage: `url(${t.backgroundImage})`, opacity: 0.6 }}
+            style={{ backgroundImage: `url(${bg})`, opacity: 0.6 }}
             aria-hidden="true"
           />
           <div
             className="pointer-events-none absolute inset-0 bg-contain bg-center bg-no-repeat"
-            style={{ backgroundImage: `url(${t.backgroundImage})` }}
+            style={{ backgroundImage: `url(${bg})` }}
             aria-hidden="true"
           />
         </>

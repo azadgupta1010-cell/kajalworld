@@ -1,5 +1,6 @@
 import type { GalleryMedia } from '@/components/gallery/types'
 import { weddingConfig } from '@/config/weddingConfig'
+import { mediaUrl } from '@/lib/env'
 
 /**
  * Gallery media. Uses the couple's engagement photos from config first, then
@@ -10,7 +11,7 @@ import { weddingConfig } from '@/config/weddingConfig'
 const engagement: GalleryMedia[] = weddingConfig.gallery.map((g, i) => ({
   id: `engagement-${i + 1}`,
   type: 'image',
-  src: g.src,
+  src: mediaUrl(g.src),
   alt: g.alt,
   span: i === 0 ? 2 : 1,
 }))
@@ -18,7 +19,7 @@ const engagement: GalleryMedia[] = weddingConfig.gallery.map((g, i) => ({
 const placeholders: GalleryMedia[] = Array.from({ length: 4 }, (_, i) => ({
   id: `placeholder-${i + 1}`,
   type: 'image',
-  src: `/media/placeholder-${i + 1}.svg`,
+  src: mediaUrl(`/media/placeholder-${i + 1}.svg`),
   alt: `A moment to be captured ${i + 1}`,
 }))
 

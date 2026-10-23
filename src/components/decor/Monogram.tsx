@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { mediaUrl } from '@/lib/env'
 
 interface MonogramProps {
   className?: string
@@ -15,8 +16,8 @@ interface MonogramProps {
   blend?: 'screen' | 'multiply' | 'normal'
 }
 
-/** Drop the real K&D logo here to use it automatically. */
-const LOGO_SRC = '/media/kd-logo.png'
+/** Real K&D logo, served from the Supabase media bucket. */
+const LOGO_SRC = mediaUrl('/media/kd-logo.png')
 
 const tones: Record<NonNullable<MonogramProps['tone']>, { ring: string; letters: string; amp: string }> = {
   gold: { ring: '#C5A16A', letters: '#E3C891', amp: '#C5A16A' },
