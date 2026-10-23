@@ -182,9 +182,12 @@ export const weddingConfig: WeddingConfig = {
   story: {
     heading: 'Our Story',
     paragraphs: [
-      'Draft — Kajal and Daya Sagar can share their story here and it will appear on this page.',
+      'A cricket journalist and a teacher — two different worlds brought together by a beautiful beginning.',
+      'Our story began with a first meeting on her birthday, and on 3rd June we celebrated our engagement — a special day that brought us one step closer to forever.',
+      'With the love and blessings of our families, cherished traditions, and hearts full of hope, we are ready to begin a new chapter together.',
+      'And so, our forever begins — one beautiful moment at a time. ♡',
     ],
-    draft: true,
+    draft: false,
   },
 
   events: [
@@ -243,8 +246,8 @@ export const weddingConfig: WeddingConfig = {
       icon: 'sangeet',
       order: 2,
       dressCode: {
-        men: 'Black / Blue party wear',
-        women: 'Black / Blue party wear',
+        men: 'Black Blue party wear',
+        women: 'Black Blue party wear',
         note: 'Dress in your own style, add a little sparkle and get ready to shine.',
       },
       theme: {

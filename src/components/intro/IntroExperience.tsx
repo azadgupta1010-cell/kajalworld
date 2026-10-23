@@ -77,7 +77,7 @@ export function IntroExperience({ monogram, onBegin }: IntroExperienceProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
               >
-                <Monogram tone="ivory" size={96} className="mb-4 opacity-95" />
+                <Monogram tone="ivory" size={128} blend="normal" className="mb-4" />
                 <p className="text-center font-display text-3xl font-medium text-ivory sm:text-4xl">
                   A Wedding Invitation
                 </p>
