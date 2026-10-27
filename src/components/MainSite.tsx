@@ -31,6 +31,11 @@ export function MainSite({ onReplayIntro }: MainSiteProps) {
       <Events limit={5} />
       <Gallery items={galleryItems} />
 
+      <p className="mx-auto -mt-6 mb-10 max-w-md px-4 text-center font-body text-sm leading-relaxed text-ivory/60">
+        ✨ More memories from the celebrations are on their way — stay tuned and keep
+        checking back for updates.
+      </p>
+
       <section className="relative px-4 pb-8 pt-4">
         <div className="mx-auto flex max-w-xl flex-wrap justify-center gap-4">
           {ctas.map((c) => (
