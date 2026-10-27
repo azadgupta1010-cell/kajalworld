@@ -68,30 +68,41 @@ async function ensureBucket() {
   }
 }
 
+/** Recursively list files under a dir, returning paths RELATIVE to mediaDir
+ *  using forward slashes (so subfolders like gallery/ become bucket keys). */
+function listFiles(dir, base = '') {
+  const out = []
+  for (const d of readdirSync(dir, { withFileTypes: true })) {
+    const rel = base ? `${base}/${d.name}` : d.name
+    if (d.isDirectory()) out.push(...listFiles(join(dir, d.name), rel))
+    else if (d.isFile()) out.push(rel)
+  }
+  return out
+}
+
 async function main() {
   await ensureBucket()
 
-  const files = readdirSync(mediaDir, { withFileTypes: true })
-    .filter((d) => d.isFile())
-    .map((d) => d.name)
+  // Upload every file in public/media, preserving subfolders (e.g. gallery/).
+  const files = listFiles(mediaDir)
 
   const map = {}
-  for (const name of files) {
-    const buf = readFileSync(join(mediaDir, name))
-    const ext = extname(name).toLowerCase()
+  for (const key of files) {
+    const buf = readFileSync(join(mediaDir, key))
+    const ext = extname(key).toLowerCase()
     const contentType = contentTypes[ext] || 'application/octet-stream'
 
     const { error } = await supabase.storage
       .from(BUCKET)
-      .upload(name, buf, { contentType, upsert: true })
+      .upload(key, buf, { contentType, upsert: true })
 
     if (error) {
-      console.error(`  FAILED ${name}: ${error.message}`)
+      console.error(`  FAILED ${key}: ${error.message}`)
       continue
     }
-    const { data } = supabase.storage.from(BUCKET).getPublicUrl(name)
-    map[name] = data.publicUrl
-    console.log(`  uploaded ${name}`)
+    const { data } = supabase.storage.from(BUCKET).getPublicUrl(key)
+    map[key] = data.publicUrl
+    console.log(`  uploaded ${key}`)
   }
 
   writeFileSync(join(root, 'scripts', 'media-url-map.json'), JSON.stringify(map, null, 2))

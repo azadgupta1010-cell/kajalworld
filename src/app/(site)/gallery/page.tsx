@@ -11,8 +11,8 @@ export default function GalleryPage() {
     <main className="pt-6">
       <Gallery items={galleryItems} />
       <p className="mx-auto max-w-xl px-4 pb-16 text-center font-body text-sm text-ivory/60">
-        Engagement moments are shown here. More photographs will appear after the wedding, and
-        guests will be able to add their own moments through the photo uploads.
+        Moments from our engagement. More photographs from the wedding celebrations
+        will be added here soon.
       </p>
     </main>
   )

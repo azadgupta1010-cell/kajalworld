@@ -3,24 +3,18 @@ import { weddingConfig } from '@/config/weddingConfig'
 import { mediaUrl } from '@/lib/env'
 
 /**
- * Gallery media. Uses the couple's engagement photos from config first, then
- * fills the grid with decorative placeholder tiles so the layout always looks
- * complete. If an engagement image file is missing, the tile degrades to a
- * graceful "unavailable" state (handled in GalleryImage) — never a fake photo.
+ * Gallery media — the couple's real engagement / sagai photographs from config.
+ * Portrait shots get a taller span for an editorial masonry feel. If a file is
+ * missing it degrades to a graceful placeholder tile (handled in GalleryImage),
+ * never a fake photo.
  */
-const engagement: GalleryMedia[] = weddingConfig.gallery.map((g, i) => ({
+// Taller tiles for the portrait photos (indices here are 1,3,5 → span 2).
+const tallIndexes = new Set([0, 3, 5])
+
+export const galleryItems: GalleryMedia[] = weddingConfig.gallery.map((g, i) => ({
   id: `engagement-${i + 1}`,
   type: 'image',
   src: mediaUrl(g.src),
   alt: g.alt,
-  span: i === 0 ? 2 : 1,
+  span: tallIndexes.has(i) ? 2 : 1,
 }))
-
-const placeholders: GalleryMedia[] = Array.from({ length: 4 }, (_, i) => ({
-  id: `placeholder-${i + 1}`,
-  type: 'image',
-  src: mediaUrl(`/media/placeholder-${i + 1}.svg`),
-  alt: `A moment to be captured ${i + 1}`,
-}))
-
-export const galleryItems: GalleryMedia[] = [...engagement, ...placeholders]

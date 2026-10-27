@@ -406,15 +406,20 @@ export const weddingConfig: WeddingConfig = {
     },
   ],
 
-  // Gallery uses engagement photos when present; falls back to placeholders.
+  // Engagement / Sagai gallery. Files live in the Supabase "media" bucket
+  // under the gallery/ folder (e.g. media/gallery/engagement-1.jpg).
   gallery: [
-    { src: '/media/engagement-1.jpg', alt: 'Kajal & Daya Sagar with family' },
-    { src: '/media/engagement-2.jpg', alt: 'Kajal & Daya Sagar with their families' },
+    { src: '/media/gallery/engagement-1.jpg', alt: 'Kajal & Daya Sagar with family at the engagement' },
+    { src: '/media/gallery/engagement-2.jpg', alt: 'Kajal & Daya Sagar with family' },
+    { src: '/media/gallery/engagement-3.jpg', alt: 'The gifts and sagai ceremony' },
+    { src: '/media/gallery/engagement-4.jpg', alt: 'Kajal & Daya Sagar with parents' },
+    { src: '/media/gallery/engagement-5.jpg', alt: 'Kajal & Daya Sagar with friends and family' },
+    { src: '/media/gallery/engagement-6.jpg', alt: 'Kajal & Daya Sagar with her parents' },
   ],
 
   assets: {
     ganeshLogo: '/media/ganesh-logo.png', // drop the Shri Ganeshai Namah logo here
-    engagement: ['/media/engagement-1.jpg', '/media/engagement-2.jpg'],
+    engagement: ['/media/gallery/engagement-1.jpg', '/media/gallery/engagement-2.jpg'],
   },
 
   music: {
