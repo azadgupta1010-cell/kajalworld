@@ -16,7 +16,8 @@ import { rateLimit, clientKey, screenName, screenText } from '@/lib/guard'
 interface GuestbookPayload {
   name?: unknown
   message?: unknown
-  consent?: unknown
+  /** When true, the guest wants this blessing kept PRIVATE (not shown). */
+  isPrivate?: unknown
   /** Honeypot — must stay empty. */
   website?: unknown
 }
@@ -63,20 +64,22 @@ export async function POST(request: Request) {
   if (!msgCheck.ok) {
     return NextResponse.json({ ok: false, error: msgCheck.reason }, { status: 400 })
   }
-  if (body.consent !== true) {
-    return NextResponse.json({ ok: false, error: 'Consent is required.' }, { status: 400 })
-  }
+
+  const isPrivate = body.isPrivate === true
 
   const supabase = createServiceClient()
   if (!supabase) {
     return NextResponse.json({ ok: false, error: 'Server not configured.' }, { status: 503 })
   }
 
+  // Blessings go live immediately. Public by default; private if the guest
+  // ticked the box. Still filtered for abuse above.
   const { error } = await supabase.from('public_blessings').insert({
     name,
     message,
     consent: true,
-    status: 'pending',
+    status: 'approved',
+    is_public: !isPrivate,
   })
 
   if (error) {

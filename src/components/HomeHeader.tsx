@@ -3,6 +3,11 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { weddingConfig } from '@/config/weddingConfig'
+import { mediaUrl } from '@/lib/env'
+
+// Real logo image, served from Supabase. Drop a file named "kd-logo.png" in the
+// media bucket and it appears automatically; until then the K|D text shows.
+const LOGO_SRC = mediaUrl('/media/kd-logo.png')
 
 const links = [
   { href: '/', label: 'Home' },
@@ -24,6 +29,7 @@ export function HomeHeader() {
   const { couple } = weddingConfig
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
+  const [logoOk, setLogoOk] = useState(true)
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -40,15 +46,27 @@ export function HomeHeader() {
       }
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4" aria-label="Primary">
-        {/* Monogram */}
+        {/* Logo (image if present, else K|D text) */}
         <Link href="/" aria-label="Home" className="flex items-center gap-2 focus-visible:outline">
-          <span className="font-display text-2xl font-semibold tracking-[0.15em] text-gold-light drop-shadow">
-            {couple.bride.initial}
-          </span>
-          <span className="text-gold/70">|</span>
-          <span className="font-display text-2xl font-semibold tracking-[0.15em] text-gold-light drop-shadow">
-            {couple.groom.initial}
-          </span>
+          {logoOk ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={LOGO_SRC}
+              alt={`${couple.bride.name} & ${couple.groom.name} logo`}
+              className="h-11 w-auto drop-shadow"
+              onError={() => setLogoOk(false)}
+            />
+          ) : (
+            <span className="flex items-center gap-2">
+              <span className="font-display text-2xl font-semibold tracking-[0.15em] text-gold-light drop-shadow">
+                {couple.bride.initial}
+              </span>
+              <span className="text-gold/70">|</span>
+              <span className="font-display text-2xl font-semibold tracking-[0.15em] text-gold-light drop-shadow">
+                {couple.groom.initial}
+              </span>
+            </span>
+          )}
         </Link>
 
         {/* Desktop links */}

@@ -13,7 +13,8 @@ type Status = 'idle' | 'submitting' | 'success' | 'error'
 export function GuestbookForm() {
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
-  const [consent, setConsent] = useState(false)
+  // Checked = keep this blessing private (not shown in the public list).
+  const [isPrivate, setIsPrivate] = useState(false)
   // Honeypot: hidden from real users; only bots fill it.
   const [website, setWebsite] = useState('')
 
@@ -25,7 +26,6 @@ export function GuestbookForm() {
     const next: Record<string, string> = {}
     if (!name.trim()) next.name = 'Please enter your name.'
     if (!message.trim()) next.message = 'Please write a short message.'
-    if (!consent) next.consent = 'Please agree before sharing your message.'
     setErrors(next)
     return Object.keys(next).length === 0
   }
@@ -45,7 +45,7 @@ export function GuestbookForm() {
       const res = await fetch('/api/guestbook', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), message: message.trim(), consent, website }),
+        body: JSON.stringify({ name: name.trim(), message: message.trim(), isPrivate, website }),
       })
       const data = (await res.json().catch(() => null)) as { ok?: boolean } | null
       if (res.ok && data?.ok) {
@@ -65,7 +65,9 @@ export function GuestbookForm() {
       <div className="rounded-xl border border-gold/30 bg-white/[0.04] p-8 text-center">
         <p className="font-display text-2xl text-gold-light">Thank you for your blessing!</p>
         <p className="mt-3 font-body text-sm text-ivory/75">
-          Your message will appear in the guestbook once it has been reviewed.
+          {isPrivate
+            ? 'Your message has been sent privately to the couple.'
+            : 'Your blessing is now part of the guestbook below. Thank you!'}
         </p>
       </div>
     )
@@ -143,19 +145,12 @@ export function GuestbookForm() {
         <label className="flex items-start gap-3 font-body text-sm text-ivory/80">
           <input
             type="checkbox"
-            checked={consent}
-            onChange={(e) => setConsent(e.target.checked)}
+            checked={isPrivate}
+            onChange={(e) => setIsPrivate(e.target.checked)}
             className="mt-1 accent-gold"
-            aria-invalid={!!errors.consent}
-            aria-describedby={errors.consent ? 'gb-consent-error' : undefined}
           />
-          <span>I&apos;m happy for this message to be shown publicly after moderation.</span>
+          <span>Keep my message private — send it only to the couple, don&apos;t show it in the guestbook.</span>
         </label>
-        {errors.consent && (
-          <p id="gb-consent-error" className={errorClass}>
-            {errors.consent}
-          </p>
-        )}
       </div>
 
       {serverMessage && (
