@@ -164,8 +164,18 @@ export interface WeddingConfig {
   credit: {
     madeBy: string
     madeByUrl?: string
+    tagline?: string
   }
-  contact: { label: string; phones: string[] }
+  contact: {
+    label: string
+    phones: string[]
+    /** Number for the floating Call button (digits only, no +91). */
+    callNumber?: string
+    /** Number for the floating WhatsApp button (digits only, no +91). */
+    whatsappNumber?: string
+    /** The family's businesses, shown respectfully in the footer. */
+    firms?: { name: string; city: string }[]
+  }
 }
 
 export const weddingConfig: WeddingConfig = {
@@ -220,9 +230,8 @@ export const weddingConfig: WeddingConfig = {
       dateTime: '2026-11-20T09:15:00+05:30',
       timeConfirmed: true,
       timeLabel: '9:15 A.M.',
-      venue: 'Narnaul',
+      venue: '',
       venueConfirmed: true,
-      city: 'Narnaul, Haryana',
       hideVenue: true,
       hideTime: true,
       notes: ['Friday, 20th November 2026', 'At 9:15 A.M.'],
@@ -278,7 +287,6 @@ export const weddingConfig: WeddingConfig = {
           'radial-gradient(120% 120% at 50% 20%, #1B2A5B 0%, #121A38 50%, #070A18 100%)',
         backgroundImage: '/media/sangeet-bg.jpg',
         backgroundMode: 'framed',
-        framedDark: true,
         framedInk: '#FFF9F2',
         framedInkSoft: 'rgba(255,249,242,0.88)',
         accent: '#E3C891',
@@ -399,10 +407,8 @@ export const weddingConfig: WeddingConfig = {
         mood: 'A luxurious wedding night under the stars',
         background:
           'radial-gradient(90% 70% at 50% 25%, #3a1824 0%, #21191B 55%, #160F12 100%)',
-        backgroundImage: '/media/wedding-bg.png',
-        // The burgundy-gold card already contains all the wedding text, so show
-        // it whole (poster mode) with only a minimal on-page cue.
-        backgroundMode: 'poster',
+        backgroundImage: '/media/wedding-bg.jpg',
+        backgroundMode: 'framed',
         framedInk: '#8A2140',
         framedInkSoft: 'rgba(138,33,64,0.85)',
         accent: '#A5824A',
@@ -452,11 +458,21 @@ export const weddingConfig: WeddingConfig = {
 
   credit: {
     madeBy: 'Exflow',
+    madeByUrl: 'https://exflow.dpdns.org',
   },
 
   contact: {
     label: 'A Cordial Invitation From',
     phones: ['9466884664', '7988376347', '8053317489'],
+    callNumber: '9466884664',
+    whatsappNumber: '8053317489',
+    firms: [
+      { name: 'Shree Ganesh Enterprises', city: 'Narnaul, Haryana' },
+      { name: 'Gupta Trading Company', city: 'Narnaul, Haryana' },
+      { name: 'Shree Ram Traders', city: 'Narnaul, Haryana' },
+      { name: 'Shree Krishna Traders', city: 'Singhana, Rajasthan' },
+      { name: 'Shree Radhe Traders', city: 'Gorakhpur, U.P.' },
+    ],
   },
 }
 

@@ -2,6 +2,7 @@
 
 import { useMemo, type ReactNode } from 'react'
 import { MusicProvider } from '@/components/audio/MusicContext'
+import { ContactButtons } from '@/components/ui/ContactButtons'
 import { weddingConfig } from '@/config/weddingConfig'
 import { mediaUrl } from '@/lib/env'
 
@@ -21,5 +22,10 @@ export function Providers({ children }: { children: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  return <MusicProvider tracks={tracks}>{children}</MusicProvider>
+  return (
+    <MusicProvider tracks={tracks}>
+      {children}
+      <ContactButtons />
+    </MusicProvider>
+  )
 }

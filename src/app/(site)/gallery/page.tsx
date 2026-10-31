@@ -1,15 +1,24 @@
 import type { Metadata } from 'next'
 import { Gallery } from '@/components/gallery/Gallery'
 import { galleryItems } from '@/components/gallery/galleryItems'
+import { listGalleryFromStorage } from '@/lib/galleryStorage'
 
 export const metadata: Metadata = {
   title: 'Gallery — Kajal & Daya Sagar',
 }
 
-export default function GalleryPage() {
+// Revalidate periodically so newly added Supabase photos appear without a
+// redeploy (and without hammering storage on every request).
+export const revalidate = 60
+
+export default async function GalleryPage() {
+  // Prefer the live list from Supabase Storage; fall back to config photos.
+  const live = await listGalleryFromStorage()
+  const items = live.length > 0 ? live : galleryItems
+
   return (
     <main className="pt-6">
-      <Gallery items={galleryItems} />
+      <Gallery items={items} />
 
       {/* Stay-tuned banner */}
       <section className="mx-auto mb-16 max-w-xl px-4">
