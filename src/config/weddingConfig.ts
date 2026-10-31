@@ -116,6 +116,8 @@ export interface WeddingConfig {
     tagline: string
     dateLabel: string
     venueLabel: string
+    /** Full-bleed hero background photo (Supabase media path). */
+    backgroundImage?: string
   }
   invitation: {
     openingTextHi: string
@@ -171,9 +173,10 @@ export const weddingConfig: WeddingConfig = {
   weddingTimeConfirmed: true,
 
   hero: {
-    tagline: 'Together with their families, request the pleasure of your company',
+    tagline: 'Vidaai under the Starlit Sky',
     dateLabel: 'Friday, 4th December 2026',
     venueLabel: 'Manorma Resort, Jangal Kaudiya, Gorakhpur (U.P.)',
+    backgroundImage: '/media/hero-bg.png',
   },
 
   invitation: {
