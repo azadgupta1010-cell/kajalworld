@@ -2,6 +2,7 @@ import { Reveal } from '@/components/ui/Reveal'
 import { GoldDivider } from '@/components/decor/GoldDivider'
 import { FloralCorner } from '@/components/decor/FloralCorner'
 import { weddingConfig } from '@/config/weddingConfig'
+import { mediaUrl } from '@/lib/env'
 
 export function Story() {
   const { story, couple } = weddingConfig
@@ -56,10 +57,10 @@ export function Story() {
                 {story.photo && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={story.photo}
+                    src={mediaUrl(story.photo)}
                     alt={`${couple.bride.name} and ${couple.groom.name}`}
                     loading="lazy"
-                    className="mx-auto mb-8 max-h-80 w-full rounded-lg object-cover"
+                    className="mx-auto mb-8 max-h-96 w-full rounded-lg object-cover"
                   />
                 )}
 

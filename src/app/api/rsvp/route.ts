@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server'
 import { isSupabaseConfigured } from '@/lib/env'
+import { createServiceClient } from '@/lib/supabase/server'
+import { notifyTelegram, escapeHtml } from '@/lib/notify'
 
 /**
- * RSVP submission endpoint — STUB.
+ * RSVP submission endpoint.
  *
- * Validates the payload server-side and returns { ok: true } on success.
- * TODO (Phase 2): persist the RSVP to the database (Supabase) and send any
- * confirmation/notification. This stub intentionally does NOT write to a DB.
+ * Validates the payload server-side, persists it to the `public_rsvps` table
+ * (via the service role), and sends an instant Telegram notification to the
+ * couple. Returns { ok: true } on success.
  */
 
 interface RsvpPayload {
@@ -20,10 +22,7 @@ interface RsvpPayload {
 
 export async function POST(request: Request) {
   if (!isSupabaseConfigured) {
-    return NextResponse.json(
-      { ok: false, error: 'RSVP is not enabled yet.' },
-      { status: 503 },
-    )
+    return NextResponse.json({ ok: false, error: 'RSVP is not enabled yet.' }, { status: 503 })
   }
 
   let body: RsvpPayload
@@ -44,17 +43,43 @@ export async function POST(request: Request) {
   if (plusOnes < 0 || plusOnes > 10) {
     return NextResponse.json({ ok: false, error: 'Invalid guest count.' }, { status: 400 })
   }
-  if (body.events !== undefined && !Array.isArray(body.events)) {
-    return NextResponse.json({ ok: false, error: 'Invalid events list.' }, { status: 400 })
+  const events =
+    Array.isArray(body.events) && body.events.every((e) => typeof e === 'string')
+      ? (body.events as string[])
+      : []
+  const dietary = typeof body.dietary === 'string' ? body.dietary.trim() : ''
+  const message = typeof body.message === 'string' ? body.message.trim() : ''
+
+  const supabase = createServiceClient()
+  if (!supabase) {
+    return NextResponse.json({ ok: false, error: 'Server not configured.' }, { status: 503 })
   }
 
-  // TODO (Phase 2): insert validated RSVP into the database here.
-  console.info('[rsvp] received (not persisted — Phase 2 wires the DB):', {
+  const { error } = await supabase.from('public_rsvps').insert({
     name,
     attending: body.attending,
-    events: body.events,
-    plusOnes,
+    events,
+    plus_ones: plusOnes,
+    dietary: dietary || null,
+    message: message || null,
   })
+
+  if (error) {
+    console.error('[rsvp] insert failed:', error.message)
+    return NextResponse.json({ ok: false, error: 'Could not save your RSVP.' }, { status: 500 })
+  }
+
+  // Fire-and-forget notification (never blocks or fails the response).
+  const lines = [
+    `🎉 <b>New RSVP</b>`,
+    `👤 <b>${escapeHtml(name)}</b>`,
+    body.attending ? '✅ Attending' : '❌ Not attending',
+    events.length ? `🎊 Events: ${escapeHtml(events.join(', '))}` : '',
+    plusOnes ? `➕ Guests: ${plusOnes}` : '',
+    dietary ? `🍽️ Diet: ${escapeHtml(dietary)}` : '',
+    message ? `💬 ${escapeHtml(message)}` : '',
+  ].filter(Boolean)
+  void notifyTelegram(lines.join('\n'))
 
   return NextResponse.json({ ok: true })
 }

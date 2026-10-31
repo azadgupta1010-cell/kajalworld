@@ -2,15 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Countdown } from '@/components/sections/Countdown'
-import { GoldDivider } from '@/components/decor/GoldDivider'
 import { useReducedMotionPref } from '@/hooks/useReducedMotion'
 import { weddingConfig } from '@/config/weddingConfig'
 import { mediaUrl } from '@/lib/env'
 
 export function Hero() {
   const reduced = useReducedMotionPref()
-  const { couple, hero, weddingDate } = weddingConfig
+  const { couple, hero } = weddingConfig
 
   // Full-bleed garden background photo — only shown once it actually loads, so
   // a missing file falls back gracefully to the night gradient.
@@ -25,7 +23,7 @@ export function Hero() {
   }, [bgSrc])
 
   return (
-    <section className="relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 py-20 text-center">
+    <section className="relative flex min-h-[100svh] flex-col items-center justify-end overflow-hidden px-5 pb-20 pt-24 text-center sm:justify-center sm:pb-24">
       {/* Night-garden gradient base (always present as fallback) */}
       <div
         className="absolute inset-0"
@@ -75,28 +73,21 @@ export function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
       >
-        <p className="font-body text-xs uppercase tracking-[0.35em] text-gold-light/90">
-          We&apos;re getting married
-        </p>
-
-        <h1 className="mt-5 px-2 font-display text-5xl font-semibold leading-tight text-ivory sm:text-7xl">
-          {couple.bride.name}
-          <span className="mx-3 font-script text-4xl text-rose-dusty sm:text-5xl">&amp;</span>
-          {couple.groom.name}
+        <h1 className="px-2 font-display text-[2.6rem] font-semibold leading-[1.05] text-ivory sm:text-6xl md:text-7xl">
+          {couple.bride.name} <span className="font-script text-rose-dusty">&amp;</span> {couple.groom.name}
         </h1>
 
-        <div className="mt-7 flex justify-center">
-          <GoldDivider width={240} />
+        <div className="mt-5 flex items-center justify-center gap-3">
+          <span className="h-px w-8 bg-gold/60" />
+          <p className="font-body text-sm uppercase tracking-[0.3em] text-gold-light">
+            {hero.dateLabel}
+          </p>
+          <span className="h-px w-8 bg-gold/60" />
         </div>
 
-        <p className="mt-6 max-w-md text-balance font-body text-sm leading-relaxed text-ivory/80">
+        <p className="mt-4 font-display text-xl italic text-ivory/90 sm:text-2xl">
           {hero.tagline}
         </p>
-        <p className="mt-4 font-display text-xl text-gold-light">{hero.dateLabel}</p>
-        <p className="font-body text-sm text-ivory/70">{hero.venueLabel}</p>
-
-        {/* Countdown (isolated so only the digits re-render each second) */}
-        <Countdown target={weddingDate} />
       </motion.div>
 
       {/* scroll cue */}

@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server'
 import { isSupabaseConfigured } from '@/lib/env'
+import { createServiceClient } from '@/lib/supabase/server'
+import { notifyTelegram, escapeHtml } from '@/lib/notify'
 
 /**
- * Guestbook (blessings) submission endpoint — STUB.
+ * Guestbook (blessings) submission endpoint.
  *
- * Validates the payload server-side and returns { ok: true } on success.
- * TODO (Phase 2): persist the message to the database (Supabase) in a
- * pending-moderation state. This stub intentionally does NOT write to a DB.
+ * Validates the payload, saves it to `public_blessings` in a pending state
+ * (via the service role), and sends an instant Telegram notification to the
+ * couple. Returns { ok: true } on success.
  */
 
 interface GuestbookPayload {
@@ -17,10 +19,7 @@ interface GuestbookPayload {
 
 export async function POST(request: Request) {
   if (!isSupabaseConfigured) {
-    return NextResponse.json(
-      { ok: false, error: 'Guestbook is not enabled yet.' },
-      { status: 503 },
-    )
+    return NextResponse.json({ ok: false, error: 'Guestbook is not enabled yet.' }, { status: 503 })
   }
 
   let body: GuestbookPayload
@@ -42,11 +41,27 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'Consent is required.' }, { status: 400 })
   }
 
-  // TODO (Phase 2): insert the message as pending moderation into the database.
-  console.info('[guestbook] received (not persisted — Phase 2 wires the DB):', {
+  const supabase = createServiceClient()
+  if (!supabase) {
+    return NextResponse.json({ ok: false, error: 'Server not configured.' }, { status: 503 })
+  }
+
+  const { error } = await supabase.from('public_blessings').insert({
     name,
-    length: message.length,
+    message,
+    consent: true,
+    status: 'pending',
   })
+
+  if (error) {
+    console.error('[guestbook] insert failed:', error.message)
+    return NextResponse.json({ ok: false, error: 'Could not save your message.' }, { status: 500 })
+  }
+
+  // Fire-and-forget notification (never blocks or fails the response).
+  void notifyTelegram(
+    [`💐 <b>New Blessing</b>`, `👤 <b>${escapeHtml(name)}</b>`, `💬 ${escapeHtml(message)}`].join('\n'),
+  )
 
   return NextResponse.json({ ok: true })
 }

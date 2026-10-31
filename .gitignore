@@ -33,3 +33,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 coverage
+
+# media lives in Supabase Storage — keep heavy files out of git
+public/media/**
+!public/media/.gitkeep

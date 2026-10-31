@@ -202,6 +202,7 @@ export const weddingConfig: WeddingConfig = {
       'With the love and blessings of our families, cherished traditions, and hearts full of hope, we are ready to begin a new chapter together.',
       'And so, our forever begins — one beautiful moment at a time. ♡',
     ],
+    photo: '/media/story-bg.jpg',
     draft: false,
   },
 
@@ -418,6 +419,7 @@ export const weddingConfig: WeddingConfig = {
     { src: '/media/gallery/engagement-4.jpg', alt: 'Kajal & Daya Sagar with parents' },
     { src: '/media/gallery/engagement-5.jpg', alt: 'Kajal & Daya Sagar with friends and family' },
     { src: '/media/gallery/engagement-6.jpg', alt: 'Kajal & Daya Sagar with her parents' },
+    { src: '/media/gallery/engagement-7.jpg', alt: 'Kajal in her engagement lehenga' },
   ],
 
   assets: {

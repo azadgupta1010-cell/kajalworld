@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Hero } from '@/components/sections/Hero'
 import { Events } from '@/components/sections/Events'
 import { Story } from '@/components/sections/Story'
+import { CountdownSection } from '@/components/sections/CountdownSection'
 import { Gallery } from '@/components/gallery/Gallery'
 import { Footer } from '@/components/sections/Footer'
 import { galleryItems } from '@/components/gallery/galleryItems'
@@ -29,6 +30,7 @@ export function MainSite({ onReplayIntro }: MainSiteProps) {
       <Hero />
       <Story />
       <Events limit={5} />
+      <CountdownSection />
       <Gallery items={galleryItems} />
 
       <p className="mx-auto -mt-6 mb-10 max-w-md px-4 text-center font-body text-sm leading-relaxed text-ivory/60">
