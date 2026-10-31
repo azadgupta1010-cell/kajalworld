@@ -172,13 +172,19 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         </>
       )}
 
-      {/* Poster background: artwork already has all text → show whole (contain)
-          with a blurred letterbox fill and a minimal overlay. */}
+      {/* Poster background: the card already has all the text → show it whole
+          (contain) so nothing is cropped on any phone. A soft dark fill (not a
+          heavy blur) sits behind for the thin letterbox edges. */}
       {posterMode && (
         <>
           <div
-            className="pointer-events-none absolute inset-0 scale-110 bg-cover bg-center blur-2xl"
-            style={{ backgroundImage: `url(${bg})`, opacity: 0.6 }}
+            className="pointer-events-none absolute inset-0"
+            style={{ background: '#1a0f13' }}
+            aria-hidden="true"
+          />
+          <div
+            className="pointer-events-none absolute inset-0 scale-105 bg-cover bg-center blur-xl"
+            style={{ backgroundImage: `url(${bg})`, opacity: 0.35 }}
             aria-hidden="true"
           />
           <div
@@ -288,22 +294,31 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         className={
           'pointer-events-none relative z-10 flex flex-col items-center text-center ' +
           (framedMode
-            ? 'max-w-sm px-2 ' +
+            ? 'max-w-sm ' +
+              // Dark-photo framed pages get a soft shade panel behind the text
+              // so everything is clearly readable over the photo.
+              (t.framedDark ? 'rounded-[28px] px-5 py-7 sm:px-7 ' : 'px-2 ') +
               (framedAlign === 'right'
                 ? 'w-[52%] ml-auto mr-[3%] sm:mr-[6%]'
                 : framedAlign === 'left'
                   ? 'w-[52%] mr-auto ml-[3%] sm:ml-[6%]'
-                  : 'w-[88%]')
+                  : t.framedDark
+                    ? 'w-[90%]'
+                    : 'w-[88%]')
             : 'w-full max-w-xl')
         }
         style={
           framedMode
             ? {
-                // No panel — sit directly on the photo. A soft text shadow keeps
-                // text readable: dark glow for dark photos, light for light art.
                 textShadow: t.framedDark
-                  ? '0 1px 12px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.85)'
+                  ? '0 1px 10px rgba(0,0,0,0.7)'
                   : '0 1px 10px rgba(255,249,236,0.9), 0 1px 3px rgba(255,249,236,0.9)',
+                // Readable shade panel behind text on dark photos.
+                background: t.framedDark
+                  ? 'linear-gradient(180deg, rgba(10,8,14,0.62), rgba(10,8,14,0.5))'
+                  : undefined,
+                boxShadow: t.framedDark ? 'inset 0 0 0 1px rgba(197,161,106,0.4)' : undefined,
+                backdropFilter: t.framedDark ? 'blur(4px)' : undefined,
               }
             : undefined
         }

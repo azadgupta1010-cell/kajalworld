@@ -221,7 +221,7 @@ export const weddingConfig: WeddingConfig = {
       timeConfirmed: true,
       timeLabel: '9:15 A.M.',
       venue: 'Narnaul',
-      venueConfirmed: false,
+      venueConfirmed: true,
       city: 'Narnaul, Haryana',
       hideVenue: true,
       hideTime: true,
@@ -270,7 +270,7 @@ export const weddingConfig: WeddingConfig = {
       dressCode: {
         men: 'Black Blue party wear',
         women: 'Black Blue party wear',
-        note: 'Dress in your own style, add a little sparkle and get ready to shine.',
+        note: 'Black Blue party wear dress — dress in your own style, add a little sparkle and shine.',
       },
       theme: {
         mood: 'A glamorous night of music',
@@ -301,7 +301,7 @@ export const weddingConfig: WeddingConfig = {
       timeConfirmed: true,
       timeLabel: '6:00 P.M.',
       venue: 'Gorakhpur',
-      venueConfirmed: false,
+      venueConfirmed: true,
       city: 'Uttar Pradesh',
       mapUrl: 'https://maps.app.goo.gl/a6v4Y1LwZQnUiRD16',
       notes: ['Wednesday, 2nd December 2026', '6:00 P.M. onwards'],
@@ -342,7 +342,7 @@ export const weddingConfig: WeddingConfig = {
       timeConfirmed: true,
       timeLabel: '11:00 A.M.',
       venue: 'Gorakhpur',
-      venueConfirmed: false,
+      venueConfirmed: true,
       city: 'Uttar Pradesh',
       mapUrl: 'https://maps.app.goo.gl/a6v4Y1LwZQnUiRD16',
       notes: ['Thursday, 3rd December 2026', '11:00 A.M. onwards'],
@@ -399,8 +399,10 @@ export const weddingConfig: WeddingConfig = {
         mood: 'A luxurious wedding night under the stars',
         background:
           'radial-gradient(90% 70% at 50% 25%, #3a1824 0%, #21191B 55%, #160F12 100%)',
-        backgroundImage: '/media/wedding-bg.jpg',
-        backgroundMode: 'framed',
+        backgroundImage: '/media/wedding-bg.png',
+        // The burgundy-gold card already contains all the wedding text, so show
+        // it whole (poster mode) with only a minimal on-page cue.
+        backgroundMode: 'poster',
         framedInk: '#8A2140',
         framedInkSoft: 'rgba(138,33,64,0.85)',
         accent: '#A5824A',
