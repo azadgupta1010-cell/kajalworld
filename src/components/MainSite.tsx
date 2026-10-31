@@ -33,9 +33,20 @@ export function MainSite({ onReplayIntro }: MainSiteProps) {
       <Story />
       <Events limit={5} />
       <CountdownSection />
-      <Gallery items={galleryItems} />
+      <Gallery items={galleryItems.slice(0, 6)} />
 
-      <p className="mx-auto -mt-6 mb-10 max-w-md px-4 text-center font-body text-sm leading-relaxed text-ivory/60">
+      {/* View more → full gallery */}
+      <div className="-mt-10 mb-8 flex justify-center px-4">
+        <Link
+          href="/gallery"
+          className="group inline-flex items-center gap-2 rounded-full border border-gold bg-gold/10 px-8 py-3 font-body text-xs font-semibold uppercase tracking-[0.2em] text-gold-light transition hover:bg-gold/20 focus-visible:outline"
+        >
+          View All Photos
+          <span aria-hidden="true" className="transition-transform group-hover:translate-x-1">→</span>
+        </Link>
+      </div>
+
+      <p className="mx-auto mb-10 max-w-md px-4 text-center font-body text-sm leading-relaxed text-ivory/60">
         ✨ More memories from the celebrations are on their way — stay tuned and keep
         checking back for updates.
       </p>
