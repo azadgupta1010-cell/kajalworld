@@ -78,11 +78,14 @@ export function Hero() {
         </h1>
 
         <div className="mt-5 flex items-center justify-center gap-3">
-          <span className="h-px w-8 bg-gold/60" />
-          <p className="font-body text-sm uppercase tracking-[0.3em] text-gold-light">
+          <span className="h-px w-10 bg-gold" />
+          <p
+            className="font-body text-sm font-semibold uppercase tracking-[0.25em] text-gold-light sm:text-base"
+            style={{ textShadow: '0 1px 8px rgba(0,0,0,0.85)' }}
+          >
             {hero.dateLabel}
           </p>
-          <span className="h-px w-8 bg-gold/60" />
+          <span className="h-px w-10 bg-gold" />
         </div>
 
         <p className="mt-4 font-display text-xl italic text-ivory/90 sm:text-2xl">

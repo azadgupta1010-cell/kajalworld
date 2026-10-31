@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { HomeHeader } from '@/components/HomeHeader'
 import { Hero } from '@/components/sections/Hero'
 import { Events } from '@/components/sections/Events'
 import { Story } from '@/components/sections/Story'
@@ -27,6 +28,7 @@ export function MainSite({ onReplayIntro }: MainSiteProps) {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
+      <HomeHeader />
       <Hero />
       <Story />
       <Events limit={5} />
