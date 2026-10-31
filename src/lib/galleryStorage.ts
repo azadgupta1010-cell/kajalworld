@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { env, isSupabaseConfigured } from '@/lib/env'
+import { env, isSupabaseConfigured, serverEnv } from '@/lib/env'
 import type { GalleryMedia } from '@/components/gallery/types'
 
 /**
@@ -17,7 +17,11 @@ export async function listGalleryFromStorage(): Promise<GalleryMedia[]> {
   if (!isSupabaseConfigured) return []
 
   try {
-    const supabase = createClient(env.supabaseUrl, env.supabaseAnonKey, {
+    // Use the service role (server-side only) to LIST the folder — the anon
+    // key can read public files but is not allowed to list storage objects.
+    // Falls back to the anon key if the service key isn't set.
+    const key = serverEnv().serviceRoleKey || env.supabaseAnonKey
+    const supabase = createClient(env.supabaseUrl, key, {
       auth: { autoRefreshToken: false, persistSession: false },
     })
 
