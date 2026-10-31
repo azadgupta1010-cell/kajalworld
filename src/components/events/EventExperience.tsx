@@ -76,6 +76,10 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         ? 'rgba(58,36,22,0.82)'
         : 'rgba(255,249,242,0.86)'
 
+  // Translucent card background for framed-mode info cards (venue, dress code).
+  // Dark glass over a dark photo; light glass over a light/cream frame.
+  const framedCardBg = t.framedDark ? 'rgba(10,8,14,0.5)' : 'rgba(255,249,236,0.35)'
+
   // Destination when moving forward: next event, or the main website at the end.
   const goNext = useCallback(() => {
     router.push(nextSlug ? `/events/${nextSlug}` : '/')
@@ -154,13 +158,14 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
             style={{ backgroundImage: `url(${bg})`, opacity: bgLoaded ? 1 : 0 }}
             aria-hidden="true"
           />
-          {/* very light centre wash — just enough for text legibility, lets
-              the poster art show through (no heavy white panel) */}
+          {/* Readability wash. For light/cream frames: a soft light centre wash.
+              For a DARK photo (framedDark): a darker scrim so light text reads. */}
           <div
             className="pointer-events-none absolute inset-0"
             style={{
-              background:
-                'radial-gradient(60% 48% at 50% 48%, rgba(253,248,236,0.28) 0%, rgba(253,248,236,0.12) 55%, transparent 78%)',
+              background: t.framedDark
+                ? 'linear-gradient(180deg, rgba(10,8,14,0.55) 0%, rgba(10,8,14,0.3) 40%, rgba(10,8,14,0.55) 75%, rgba(10,8,14,0.8) 100%)'
+                : 'radial-gradient(60% 48% at 50% 48%, rgba(253,248,236,0.28) 0%, rgba(253,248,236,0.12) 55%, transparent 78%)',
             }}
             aria-hidden="true"
           />
@@ -294,9 +299,11 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         style={
           framedMode
             ? {
-                // No white panel — sit directly on the poster. A soft text
-                // shadow keeps text readable against the art.
-                textShadow: '0 1px 10px rgba(255,249,236,0.9), 0 1px 3px rgba(255,249,236,0.9)',
+                // No panel — sit directly on the photo. A soft text shadow keeps
+                // text readable: dark glow for dark photos, light for light art.
+                textShadow: t.framedDark
+                  ? '0 1px 12px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.85)'
+                  : '0 1px 10px rgba(255,249,236,0.9), 0 1px 3px rgba(255,249,236,0.9)',
               }
             : undefined
         }
@@ -375,7 +382,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
             className="mt-4 rounded-2xl border px-6 py-3"
             style={{
               borderColor: d.ornamentAccent,
-              background: framedMode ? 'rgba(255,249,236,0.3)' : 'rgba(255,255,255,0.08)',
+              background: framedMode ? framedCardBg : 'rgba(255,255,255,0.08)',
               backdropFilter: framedMode ? 'blur(3px)' : undefined,
             }}
           >
@@ -417,7 +424,7 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
             style={{
               borderColor: framedMode ? `${d.ornamentAccent}66` : t.daytime ? 'rgba(157,41,75,0.25)' : 'rgba(255,255,255,0.18)',
               background: framedMode
-                ? 'rgba(255,249,236,0.35)'
+                ? framedCardBg
                 : t.daytime
                   ? 'rgba(255,255,255,0.32)'
                   : 'rgba(255,255,255,0.06)',

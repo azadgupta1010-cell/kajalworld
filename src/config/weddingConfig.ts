@@ -45,6 +45,12 @@ export interface EventTheme {
    * Mehndi frame with the bride on the left). Defaults to 'center'.
    */
   framedAlign?: 'center' | 'left' | 'right'
+  /**
+   * Set true when the framed background PHOTO is dark (e.g. a night portrait).
+   * The page then uses a dark scrim + light text instead of the default light
+   * cream wash, so text stays readable.
+   */
+  framedDark?: boolean
   /** Ink colour to use for text when a framed background is active. */
   framedInk?: string
   framedInkSoft?: string
@@ -262,9 +268,9 @@ export const weddingConfig: WeddingConfig = {
       icon: 'sangeet',
       order: 2,
       dressCode: {
-        men: 'Black & blue party wear',
-        women: 'Black & blue party wear',
-        note: 'Black & blue party wear',
+        men: 'Black Blue party wear',
+        women: 'Black Blue party wear',
+        note: 'Dress in your own style, add a little sparkle and get ready to shine.',
       },
       theme: {
         mood: 'A glamorous night of music',
@@ -272,9 +278,10 @@ export const weddingConfig: WeddingConfig = {
           'radial-gradient(120% 120% at 50% 20%, #1B2A5B 0%, #121A38 50%, #070A18 100%)',
         backgroundImage: '/media/sangeet-bg.jpg',
         backgroundMode: 'framed',
-        framedInk: '#1C2A5B',
-        framedInkSoft: 'rgba(28,42,91,0.85)',
-        accent: '#2C3E86',
+        framedDark: true,
+        framedInk: '#FFF9F2',
+        framedInkSoft: 'rgba(255,249,242,0.88)',
+        accent: '#E3C891',
         accentSoft: '#C5A16A',
         motif: '🎶',
         daytime: false,
