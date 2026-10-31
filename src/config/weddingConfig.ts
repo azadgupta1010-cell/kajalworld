@@ -202,7 +202,7 @@ export const weddingConfig: WeddingConfig = {
       'With the love and blessings of our families, cherished traditions, and hearts full of hope, we are ready to begin a new chapter together.',
       'And so, our forever begins — one beautiful moment at a time. ♡',
     ],
-    photo: '/media/story-bg.jpg',
+    photo: '/media/story-couple.jpg',
     draft: false,
   },
 
