@@ -310,10 +310,15 @@ export function EventExperience({ event, index, total, prevSlug, nextSlug }: Eve
         style={
           framedMode
             ? {
-                textShadow: t.framedDark
-                  ? '0 1px 10px rgba(0,0,0,0.7)'
-                  : '0 1px 10px rgba(255,249,236,0.9), 0 1px 3px rgba(255,249,236,0.9)',
-                // Readable shade panel behind text on dark photos.
+                // Shadow matches the background tone:
+                //  - dark photo (framedDark OR non-daytime) → soft dark shadow
+                //    for readability WITHOUT the cream glow.
+                //  - light/cream frame (daytime) → subtle cream shadow.
+                textShadow:
+                  t.framedDark || !t.daytime
+                    ? '0 1px 6px rgba(0,0,0,0.55)'
+                    : '0 1px 8px rgba(255,249,236,0.75)',
+                // Readable shade panel behind text ONLY for explicit framedDark.
                 background: t.framedDark
                   ? 'linear-gradient(180deg, rgba(10,8,14,0.62), rgba(10,8,14,0.5))'
                   : undefined,
