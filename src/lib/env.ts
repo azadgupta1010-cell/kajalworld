@@ -34,7 +34,11 @@ export function mediaUrl(ref?: string | null): string {
     .split('/')
     .map((seg) => encodeURIComponent(seg))
     .join('/')
-  return `${env.supabaseUrl}/storage/v1/object/public/media/${encoded}`
+  // Cache-buster: a version that rolls over every ~10 minutes. When a file is
+  // replaced in Supabase under the same name, the URL changes within minutes
+  // so browsers/CDN fetch the fresh image instead of a stale cached copy.
+  const v = Math.floor(Date.now() / (10 * 60 * 1000))
+  return `${env.supabaseUrl}/storage/v1/object/public/media/${encoded}?v=${v}`
 }
 
 /** Server-only secrets. Never import this into a client component. */
