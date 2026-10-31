@@ -20,6 +20,8 @@ export function RsvpForm() {
   const [plusOnes, setPlusOnes] = useState(0)
   const [dietary, setDietary] = useState('')
   const [message, setMessage] = useState('')
+  // Honeypot: hidden from real users; only bots fill it.
+  const [website, setWebsite] = useState('')
 
   const [status, setStatus] = useState<Status>('idle')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -66,6 +68,7 @@ export function RsvpForm() {
           plusOnes: attending === 'yes' ? plusOnes : 0,
           dietary: dietary.trim(),
           message: message.trim(),
+          website, // honeypot
         }),
       })
       const data = (await res.json().catch(() => null)) as { ok?: boolean } | null
@@ -99,6 +102,20 @@ export function RsvpForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-6">
+      {/* Honeypot: visually hidden, off-screen, not focusable. Real users
+          never fill it; bots that auto-fill every field get silently dropped. */}
+      <div aria-hidden="true" className="absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="rsvp-website">Website</label>
+        <input
+          id="rsvp-website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+      </div>
+
       {!isSupabaseConfigured && (
         <p className="rounded-md border border-gold/25 bg-gold/5 px-4 py-3 font-body text-xs text-gold-light/90">
           RSVP submission opens soon. You can still fill in the form to preview it.

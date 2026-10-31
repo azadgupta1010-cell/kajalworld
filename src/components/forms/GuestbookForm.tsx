@@ -14,6 +14,8 @@ export function GuestbookForm() {
   const [name, setName] = useState('')
   const [message, setMessage] = useState('')
   const [consent, setConsent] = useState(false)
+  // Honeypot: hidden from real users; only bots fill it.
+  const [website, setWebsite] = useState('')
 
   const [status, setStatus] = useState<Status>('idle')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -43,7 +45,7 @@ export function GuestbookForm() {
       const res = await fetch('/api/guestbook', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: name.trim(), message: message.trim(), consent }),
+        body: JSON.stringify({ name: name.trim(), message: message.trim(), consent, website }),
       })
       const data = (await res.json().catch(() => null)) as { ok?: boolean } | null
       if (res.ok && data?.ok) {
@@ -76,6 +78,19 @@ export function GuestbookForm() {
 
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-6">
+      {/* Honeypot: visually hidden, off-screen, not focusable. */}
+      <div aria-hidden="true" className="absolute left-[-9999px] top-[-9999px] h-0 w-0 overflow-hidden">
+        <label htmlFor="gb-website">Website</label>
+        <input
+          id="gb-website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(e) => setWebsite(e.target.value)}
+        />
+      </div>
+
       {!isSupabaseConfigured && (
         <p className="rounded-md border border-gold/25 bg-gold/5 px-4 py-3 font-body text-xs text-gold-light/90">
           The guestbook opens soon. You can preview the form below.

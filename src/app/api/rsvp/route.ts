@@ -2,13 +2,13 @@ import { NextResponse } from 'next/server'
 import { isSupabaseConfigured } from '@/lib/env'
 import { createServiceClient } from '@/lib/supabase/server'
 import { notifyTelegram, escapeHtml } from '@/lib/notify'
+import { rateLimit, clientKey, screenName, screenText } from '@/lib/guard'
 
 /**
  * RSVP submission endpoint.
  *
- * Validates the payload server-side, persists it to the `public_rsvps` table
- * (via the service role), and sends an instant Telegram notification to the
- * couple. Returns { ok: true } on success.
+ * Abuse protection: rate limiting, honeypot, name/message screening. Then
+ * persists to `public_rsvps` (service role) and sends a Telegram notification.
  */
 
 interface RsvpPayload {
@@ -18,11 +18,22 @@ interface RsvpPayload {
   plusOnes?: unknown
   dietary?: unknown
   message?: unknown
+  /** Honeypot — must stay empty; bots tend to fill every field. */
+  website?: unknown
 }
 
 export async function POST(request: Request) {
   if (!isSupabaseConfigured) {
     return NextResponse.json({ ok: false, error: 'RSVP is not enabled yet.' }, { status: 503 })
+  }
+
+  // Rate limit per client.
+  const rl = rateLimit(`rsvp:${clientKey(request)}`)
+  if (!rl.ok) {
+    return NextResponse.json(
+      { ok: false, error: 'Too many requests. Please wait a moment and try again.' },
+      { status: 429, headers: { 'Retry-After': String(rl.retryAfter ?? 60) } },
+    )
   }
 
   let body: RsvpPayload
@@ -32,9 +43,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: 'Invalid JSON body.' }, { status: 400 })
   }
 
+  // Honeypot: a real user never fills this hidden field. Pretend success so
+  // bots don't learn they were caught.
+  if (typeof body.website === 'string' && body.website.trim() !== '') {
+    return NextResponse.json({ ok: true })
+  }
+
   const name = typeof body.name === 'string' ? body.name.trim() : ''
   if (!name) {
     return NextResponse.json({ ok: false, error: 'Name is required.' }, { status: 400 })
+  }
+  const nameCheck = screenName(name)
+  if (!nameCheck.ok) {
+    return NextResponse.json({ ok: false, error: nameCheck.reason }, { status: 400 })
   }
   if (typeof body.attending !== 'boolean') {
     return NextResponse.json({ ok: false, error: 'Attendance is required.' }, { status: 400 })
@@ -45,10 +66,20 @@ export async function POST(request: Request) {
   }
   const events =
     Array.isArray(body.events) && body.events.every((e) => typeof e === 'string')
-      ? (body.events as string[])
+      ? (body.events as string[]).slice(0, 20)
       : []
   const dietary = typeof body.dietary === 'string' ? body.dietary.trim() : ''
   const message = typeof body.message === 'string' ? body.message.trim() : ''
+
+  // Screen free-text fields for abuse / spam.
+  if (dietary) {
+    const c = screenText(dietary, { maxLen: 200 })
+    if (!c.ok) return NextResponse.json({ ok: false, error: c.reason }, { status: 400 })
+  }
+  if (message) {
+    const c = screenText(message, { maxLen: 500 })
+    if (!c.ok) return NextResponse.json({ ok: false, error: c.reason }, { status: 400 })
+  }
 
   const supabase = createServiceClient()
   if (!supabase) {
